@@ -41,7 +41,7 @@ The script will:
 2. **Create initial page** manually on GitHub
 3. **Clone wiki repository**:
    ```bash
-   git clone https://github.com/fuR-Gaming/stake-engine-client.wiki.git
+   git clone https://github.com/raw-fun-gaming/stake-engine-client.wiki.git
    ```
 4. **Copy files** from this directory
 5. **Commit and push**:

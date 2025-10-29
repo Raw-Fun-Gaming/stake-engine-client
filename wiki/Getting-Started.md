@@ -175,4 +175,4 @@ Now that you have the basics:
 
 - **[Common Issues](Common-Issues)** - Solutions to frequent problems
 - **[Status Codes](Status-Codes)** - Complete reference of error codes
-- **[GitHub Issues](https://github.com/fuR-Gaming/stake-engine-client/issues)** - Report bugs or ask questions
+- **[GitHub Issues](https://github.com/raw-fun-gaming/stake-engine-client/issues)** - Report bugs or ask questions

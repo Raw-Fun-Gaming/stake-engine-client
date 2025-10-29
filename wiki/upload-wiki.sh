@@ -6,7 +6,7 @@
 echo "🚀 Uploading Stake Engine Client Wiki Pages"
 echo "=========================================="
 
-REPO_URL="https://github.com/fuR-Gaming/stake-engine-client.wiki.git"
+REPO_URL="https://github.com/raw-fun-gaming/stake-engine-client.wiki.git"
 WIKI_DIR="wiki-upload"
 
 # Check if we're in the right directory
@@ -67,7 +67,7 @@ git push origin master
 
 if [ $? -eq 0 ]; then
     echo "✅ Wiki successfully uploaded to GitHub!"
-    echo "🌐 View at: https://github.com/fuR-Gaming/stake-engine-client/wiki"
+    echo "🌐 View at: https://github.com/raw-fun-gaming/stake-engine-client/wiki"
 else
     echo "❌ Upload failed. You may need to:"
     echo "   1. Enable wiki in repository settings"

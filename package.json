@@ -34,10 +34,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/fuR-Gaming/stake-engine-client.git"
+    "url": "https://github.com/raw-fun-gaming/stake-engine-client.git"
   },
   "bugs": {
-    "url": "https://github.com/fuR-Gaming/stake-engine-client/issues"
+    "url": "https://github.com/raw-fun-gaming/stake-engine-client/issues"
   },
-  "homepage": "https://github.com/fuR-Gaming/stake-engine-client#readme"
+  "homepage": "https://github.com/raw-fun-gaming/stake-engine-client#readme"
 }

@@ -66,5 +66,5 @@ export const metadata = {
 	version: '1.0.1',
 	description: 'Lightweight TypeScript client extracted from Stake Engine web-sdk for RGS API communication',
 	source: 'https://github.com/StakeEngine/web-sdk',
-	repository: 'https://github.com/fuR-Gaming/stake-engine-client',
+	repository: 'https://github.com/raw-fun-gaming/stake-engine-client',
 } as const;

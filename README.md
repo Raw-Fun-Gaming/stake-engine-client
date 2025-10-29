@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/stake-engine-client.svg?style=flat-square)](https://www.npmjs.com/package/stake-engine-client)
 [![npm downloads](https://img.shields.io/npm/dm/stake-engine-client.svg?style=flat-square)](https://www.npmjs.com/package/stake-engine-client)
-[![CI](https://img.shields.io/github/actions/workflow/status/fuR-Gaming/stake-engine-client/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/fuR-Gaming/stake-engine-client/actions/workflows/ci.yml)
-[![Security](https://img.shields.io/github/actions/workflow/status/fuR-Gaming/stake-engine-client/security.yml?branch=main&style=flat-square&label=Security)](https://github.com/fuR-Gaming/stake-engine-client/actions/workflows/security.yml)
-[![License](https://img.shields.io/npm/l/stake-engine-client.svg?style=flat-square)](https://github.com/fuR-Gaming/stake-engine-client/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/raw-fun-gaming/stake-engine-client/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/raw-fun-gaming/stake-engine-client/actions/workflows/ci.yml)
+[![Security](https://img.shields.io/github/actions/workflow/status/raw-fun-gaming/stake-engine-client/security.yml?branch=main&style=flat-square&label=Security)](https://github.com/raw-fun-gaming/stake-engine-client/actions/workflows/security.yml)
+[![License](https://img.shields.io/npm/l/stake-engine-client.svg?style=flat-square)](https://github.com/raw-fun-gaming/stake-engine-client/blob/main/LICENSE)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg?style=flat-square)](http://www.typescriptlang.org/)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/stake-engine-client?style=flat-square)](https://bundlephobia.com/package/stake-engine-client)
 [![Tree Shaking](https://img.shields.io/badge/tree%20shaking-supported-brightgreen?style=flat-square)](https://webpack.js.org/guides/tree-shaking/)
