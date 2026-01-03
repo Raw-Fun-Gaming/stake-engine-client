@@ -5,8 +5,8 @@ Welcome to the comprehensive documentation for the **Stake Engine Client** - a l
 ## 📚 Documentation Index
 
 ### Getting Started
-- **[Installation & Setup](Getting-Started)** - How to install and configure the client
-- **[Quick Start Guide](Quick-Start)** - Jump straight into using the client
+- **[Getting Started with Demo](Getting-Started)** - Set up and test with Stake Engine console
+- **[Package Integration](Package-Integration)** - Install and use in your own project
 - **[URL Parameters](URL-Parameters)** - Browser-friendly configuration
 
 ### API Reference

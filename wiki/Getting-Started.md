@@ -1,6 +1,8 @@
-# Getting Started
+# Getting Started with Demo
 
 This guide walks you through setting up a Stake Engine game from scratch and testing the API using the interactive demo page.
+
+> **Looking to integrate the package into your own project?** See [Package Integration](Package-Integration) instead.
 
 ## Prerequisites
 
