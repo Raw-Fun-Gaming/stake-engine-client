@@ -78,9 +78,9 @@ console.log('Round ended:', result.status?.statusCode === 'SUCCESS');
 
 ```typescript
 import { 
-  requestAuthenticate, 
-  requestBet, 
-  requestEndRound,
+  authenticate, 
+  play, 
+  endRound,
   API_AMOUNT_MULTIPLIER 
 } from 'stake-engine-client';
 
@@ -175,7 +175,7 @@ const finalBalance = await endRoundSafely();
 ### Batch Operations - Multiple Rounds
 
 ```typescript
-import { requestBet, endRound } from 'stake-engine-client';
+import { play, endRound } from 'stake-engine-client';
 
 async function playMultipleRounds(count: number, betAmount: number) {
   const results = [];
@@ -247,7 +247,7 @@ console.log('Game session results:', gameResults);
 
 ## 🛠️ Implementation Notes
 
-- Can only end rounds that were previously started with `requestBet`
+- Can only end rounds that were previously started with `play`
 - Calling this function when no round is active returns `ERR_BNF` (not an error)
 - Session tokens can expire during long gameplay sessions
 - The function finalizes all pending game calculations

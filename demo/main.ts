@@ -1,11 +1,11 @@
 import {
-	requestAuthenticate,
-	requestBet,
-	requestBalance,
-	requestEndRound,
-	requestEndEvent,
-	requestForceResult,
-	requestReplay,
+	authenticate,
+	play,
+	getBalance,
+	endRound,
+	endEvent,
+	forceResult,
+	replay,
 	isReplayMode,
 	getReplayUrlParams,
 	API_AMOUNT_MULTIPLIER,
@@ -166,7 +166,7 @@ function parseUrlInput(url: string) {
 	}
 }
 
-async function authenticate() {
+async function handleAuthenticate() {
 	clearError();
 
 	sessionID = sessionInput.value.trim();
@@ -179,9 +179,9 @@ async function authenticate() {
 	}
 
 	try {
-		showRequest('requestAuthenticate', { sessionID, rgsUrl, language });
+		showRequest('authenticate', { sessionID, rgsUrl, language });
 
-		const response = await requestAuthenticate({
+		const response = await authenticate({
 			sessionID,
 			rgsUrl,
 			language,
@@ -232,7 +232,7 @@ async function handleReplayMode() {
 			return;
 		}
 
-		const response = await requestReplay({
+		const response = await replay({
 			game: params.game,
 			version: params.version,
 			mode: params.mode,
@@ -289,8 +289,8 @@ async function handleBalance() {
 	clearError();
 
 	try {
-		showRequest('requestBalance', { sessionID, rgsUrl });
-		const response = await requestBalance({ sessionID: sessionID!, rgsUrl: rgsUrl! });
+		showRequest('getBalance', { sessionID, rgsUrl });
+		const response = await getBalance({ sessionID: sessionID!, rgsUrl: rgsUrl! });
 		showResponse(response);
 
 		if (response.balance) {
@@ -313,8 +313,8 @@ async function handleBetSubmit() {
 	const mode = (document.getElementById('bet-mode') as HTMLInputElement).value;
 
 	try {
-		showRequest('requestBet', { sessionID, rgsUrl, amount, mode, currency: 'USD' });
-		const response = await requestBet({
+		showRequest('play', { sessionID, rgsUrl, amount, mode, currency: 'USD' });
+		const response = await play({
 			sessionID: sessionID!,
 			rgsUrl: rgsUrl!,
 			amount,
@@ -336,8 +336,8 @@ async function handleEndRound() {
 	clearError();
 
 	try {
-		showRequest('requestEndRound', { sessionID, rgsUrl });
-		const response = await requestEndRound({ sessionID: sessionID!, rgsUrl: rgsUrl! });
+		showRequest('endRound', { sessionID, rgsUrl });
+		const response = await endRound({ sessionID: sessionID!, rgsUrl: rgsUrl! });
 		showResponse(response);
 
 		if (response.balance) {
@@ -359,8 +359,8 @@ async function handleEndEventSubmit() {
 	const eventIndex = parseInt((document.getElementById('event-index') as HTMLInputElement).value);
 
 	try {
-		showRequest('requestEndEvent', { sessionID, rgsUrl, eventIndex });
-		const response = await requestEndEvent({
+		showRequest('endEvent', { sessionID, rgsUrl, eventIndex });
+		const response = await endEvent({
 			sessionID: sessionID!,
 			rgsUrl: rgsUrl!,
 			eventIndex,
@@ -388,8 +388,8 @@ async function handleForceResultSubmit() {
 	if (symbol) search.symbol = symbol;
 
 	try {
-		showRequest('requestForceResult', { rgsUrl, mode, search });
-		const response = await requestForceResult({
+		showRequest('forceResult', { rgsUrl, mode, search });
+		const response = await forceResult({
 			rgsUrl: rgsUrl!,
 			mode,
 			search,
@@ -414,13 +414,13 @@ async function handleReplaySubmit() {
 	const event = (document.getElementById('replay-event') as HTMLInputElement).value;
 
 	try {
-		showRequest('requestReplay', { rgsUrl, game, version, mode, event });
-		const response = await requestReplay({
-			rgsUrl: rgsUrl!,
+		showRequest('replay', { rgsUrl, game, version, mode, event });
+		const response = await replay({
 			game,
 			version,
 			mode,
 			event,
+			rgsUrl: rgsUrl!,
 		});
 		showResponse(response);
 	} catch (error) {
@@ -433,7 +433,7 @@ document.getElementById('parse-url-btn')!.addEventListener('click', () => {
 	parseUrlInput(urlInput.value);
 });
 
-document.getElementById('auth-btn')!.addEventListener('click', authenticate);
+document.getElementById('auth-btn')!.addEventListener('click', handleAuthenticate);
 document.getElementById('replay-btn')!.addEventListener('click', handleManualReplay);
 document.getElementById('mode-auth')!.addEventListener('click', () => setMode(false));
 document.getElementById('mode-replay')!.addEventListener('click', () => setMode(true));
@@ -456,9 +456,9 @@ document.getElementById('btn-replay-back')!.addEventListener('click', () => {
 });
 
 // Allow Enter key to submit in input fields
-sessionInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') authenticate(); });
-rgsInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') authenticate(); });
-langInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') authenticate(); });
+sessionInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAuthenticate(); });
+rgsInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAuthenticate(); });
+langInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAuthenticate(); });
 urlInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') parseUrlInput(urlInput.value); });
 
 // Initialize
@@ -477,7 +477,7 @@ function init() {
 		langInput.value = params.language;
 
 		// Auto-authenticate
-		authenticate();
+		handleAuthenticate();
 	}
 }
 

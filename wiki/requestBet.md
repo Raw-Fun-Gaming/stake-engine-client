@@ -11,11 +11,11 @@ Simply replace `requestBet` with `play` in your code:
 ```typescript
 // Old (deprecated)
 import { requestBet } from 'stake-engine-client';
-const bet = await requestBet({ amount: 1.00, mode: 'base' });
+const result = await requestBet({ amount: 1.00, mode: 'base' });
 
 // New (recommended)
 import { play } from 'stake-engine-client';
-const play = await play({ amount: 1.00, mode: 'base' });
+const result = await play({ amount: 1.00, mode: 'base' });
 ```
 
 The function signature and behavior are identical - only the name has changed.

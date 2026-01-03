@@ -72,7 +72,7 @@ console.log('Event tracked:', event.status?.statusCode === 'SUCCESS');
 ### Sequential Event Tracking
 
 ```typescript
-import { requestBet, endEvent, endRound } from 'stake-engine-client';
+import { play, endEvent, endRound } from 'stake-engine-client';
 
 async function playGameWithEvents() {
   try {
@@ -184,9 +184,9 @@ const eventTracked = await trackEventSafely(1);
 
 ```typescript
 import { 
-  requestBet, 
-  requestEndEvent, 
-  requestEndRound 
+  play, 
+  endEvent, 
+  endRound 
 } from 'stake-engine-client';
 
 interface GameStage {
@@ -378,7 +378,7 @@ function updateProgressBar(eventCount: number): void {
 ## ⚠️ Important Considerations
 
 - **Sequential Order**: Always track events in proper sequence
-- **Active Rounds**: Only works when a round is active from `requestBet`
+- **Active Rounds**: Only works when a round is active from `play`
 - **Session Management**: Handle session expiration during event tracking
 - **Error Handling**: Implement retry logic for network failures
 - **Compliance**: Event tracking may be required for regulatory compliance

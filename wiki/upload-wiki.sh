@@ -31,17 +31,7 @@ fi
 
 # Copy wiki files
 echo "📋 Copying wiki files..."
-cp ../Home.md .
-cp ../Getting-Started.md .
-cp ../requestAuthenticate.md .
-cp ../requestBet.md .
-cp ../requestEndRound.md .
-cp ../requestBalance.md .
-cp ../requestEndEvent.md .
-cp ../requestForceResult.md .
-cp ../Error-Handling.md .
-cp ../Status-Codes.md .
-cp ../Amount-Conversion.md .
+cp ../*.md .
 
 # Add and commit files
 echo "💾 Adding files to git..."

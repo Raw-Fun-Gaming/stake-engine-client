@@ -70,7 +70,7 @@ console.log('Game state:', replay.state);                    // Array of game ev
 
 ```typescript
 import {
-	requestReplay,
+	replay,
 	getReplayUrlParams,
 	isReplayMode,
 } from 'stake-engine-client';
@@ -97,7 +97,7 @@ if (isReplayMode()) {
 
 ```typescript
 import {
-	requestReplay,
+	replay,
 	getReplayUrlParams,
 	isReplayMode,
 	API_AMOUNT_MULTIPLIER,
