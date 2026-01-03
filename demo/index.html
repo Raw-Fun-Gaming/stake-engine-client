@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Stake Engine Client - API Tester</title>
+	<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+	<div class="container">
+		<header>
+			<h1>Stake Engine Client</h1>
+			<p class="subtitle">API Tester & Demo</p>
+		</header>
+
+		<!-- Login Section (shown when no URL params) -->
+		<section id="login-section" class="card">
+			<h2>Connect to RGS</h2>
+
+			<div class="input-group">
+				<label for="url-input">Paste full URL with parameters:</label>
+				<input type="text" id="url-input" placeholder="https://game.example.com?sessionID=...&rgs_url=...">
+				<button id="parse-url-btn" class="btn btn-secondary">Parse URL</button>
+			</div>
+
+			<div class="divider">or enter manually</div>
+
+			<!-- Mode toggle -->
+			<div class="mode-toggle">
+				<button id="mode-auth" class="btn btn-toggle active">Authenticate</button>
+				<button id="mode-replay" class="btn btn-toggle">Replay</button>
+			</div>
+
+			<!-- Auth fields -->
+			<div id="auth-fields">
+				<div class="input-group">
+					<label for="session-input">Session ID:</label>
+					<input type="text" id="session-input" placeholder="Enter session ID">
+				</div>
+
+				<div class="input-group">
+					<label for="lang-input">Language:</label>
+					<input type="text" id="lang-input" value="en" placeholder="en">
+				</div>
+			</div>
+
+			<!-- Replay fields -->
+			<div id="replay-fields" class="hidden">
+				<div class="input-group">
+					<label for="replay-game-input">Game ID:</label>
+					<input type="text" id="replay-game-input" placeholder="game-uuid">
+				</div>
+
+				<div class="input-group">
+					<label for="replay-version-input">Version:</label>
+					<input type="text" id="replay-version-input" placeholder="20">
+				</div>
+
+				<div class="input-group">
+					<label for="replay-mode-input">Mode:</label>
+					<input type="text" id="replay-mode-input" value="base" placeholder="base">
+				</div>
+
+				<div class="input-group">
+					<label for="replay-event-input">Event:</label>
+					<input type="text" id="replay-event-input" placeholder="event-id">
+				</div>
+			</div>
+
+			<!-- Common field -->
+			<div class="input-group">
+				<label for="rgs-input">RGS URL:</label>
+				<input type="text" id="rgs-input" placeholder="rgs.stake-engine.com">
+			</div>
+
+			<button id="auth-btn" class="btn btn-primary">Authenticate</button>
+			<button id="replay-btn" class="btn btn-primary hidden">Load Replay</button>
+		</section>
+
+		<!-- Status Section -->
+		<section id="status-section" class="card hidden">
+			<div class="status-header">
+				<div>
+					<div id="status-indicator" class="status-indicator"></div>
+					<div id="balance-display" class="balance-display"></div>
+				</div>
+				<button id="btn-logout" class="btn btn-small">Logout</button>
+			</div>
+		</section>
+
+		<!-- Replay Section (shown when replay=true) -->
+		<section id="replay-section" class="card hidden">
+			<div class="status-header">
+				<h2>Replay Mode</h2>
+				<button id="btn-replay-back" class="btn btn-small">Back</button>
+			</div>
+			<div id="replay-info" class="replay-info"></div>
+			<h3>Replay Data:</h3>
+			<pre id="replay-output" class="output"></pre>
+		</section>
+
+		<!-- API Buttons Section -->
+		<section id="api-section" class="card hidden">
+			<h2>API Functions</h2>
+			<div class="btn-group">
+				<button id="btn-balance" class="btn">Get Balance</button>
+				<button id="btn-bet" class="btn">Place Bet</button>
+				<button id="btn-end-round" class="btn">End Round</button>
+				<button id="btn-end-event" class="btn">End Event</button>
+				<button id="btn-force-result" class="btn">Force Result</button>
+				<button id="btn-replay" class="btn">Replay</button>
+			</div>
+
+			<!-- Bet Options (shown when Place Bet clicked) -->
+			<div id="bet-options" class="options-panel hidden">
+				<h3>Bet Options</h3>
+				<div class="input-group inline">
+					<label for="bet-amount">Amount ($):</label>
+					<input type="number" id="bet-amount" value="1.00" step="0.01" min="0">
+				</div>
+				<div class="input-group inline">
+					<label for="bet-mode">Mode:</label>
+					<input type="text" id="bet-mode" value="base">
+				</div>
+				<button id="btn-bet-submit" class="btn btn-primary">Submit Bet</button>
+			</div>
+
+			<!-- End Event Options -->
+			<div id="event-options" class="options-panel hidden">
+				<h3>End Event Options</h3>
+				<div class="input-group inline">
+					<label for="event-index">Event Index:</label>
+					<input type="number" id="event-index" value="1" min="0">
+				</div>
+				<button id="btn-event-submit" class="btn btn-primary">Submit Event</button>
+			</div>
+
+			<!-- Force Result Options -->
+			<div id="force-options" class="options-panel hidden">
+				<h3>Force Result Options</h3>
+				<div class="input-group inline">
+					<label for="force-mode">Mode:</label>
+					<input type="text" id="force-mode" value="base">
+				</div>
+				<div class="input-group inline">
+					<label for="force-book-id">Book ID:</label>
+					<input type="number" id="force-book-id" placeholder="Optional">
+				</div>
+				<div class="input-group inline">
+					<label for="force-symbol">Symbol:</label>
+					<input type="text" id="force-symbol" placeholder="Optional">
+				</div>
+				<button id="btn-force-submit" class="btn btn-primary">Search</button>
+			</div>
+
+			<!-- Replay Options -->
+			<div id="replay-options" class="options-panel hidden">
+				<h3>Replay Options</h3>
+				<div class="input-group inline">
+					<label for="replay-game">Game:</label>
+					<input type="text" id="replay-game" placeholder="game-id">
+				</div>
+				<div class="input-group inline">
+					<label for="replay-version">Version:</label>
+					<input type="text" id="replay-version" placeholder="1.0.0">
+				</div>
+				<div class="input-group inline">
+					<label for="replay-mode">Mode:</label>
+					<input type="text" id="replay-mode" value="base">
+				</div>
+				<div class="input-group inline">
+					<label for="replay-event">Event:</label>
+					<input type="text" id="replay-event" placeholder="event-id">
+				</div>
+				<button id="btn-replay-submit" class="btn btn-primary">Load Replay</button>
+			</div>
+		</section>
+
+		<!-- Request/Response Section -->
+		<section id="output-section" class="card hidden">
+			<h2>Request / Response</h2>
+			<div class="output-container">
+				<div>
+					<h3>Request</h3>
+					<pre id="request-output" class="output"></pre>
+				</div>
+				<div>
+					<h3>Response</h3>
+					<pre id="response-output" class="output"></pre>
+				</div>
+			</div>
+		</section>
+
+		<!-- Error Section -->
+		<section id="error-section" class="card error hidden">
+			<h2>Error</h2>
+			<pre id="error-output" class="output"></pre>
+		</section>
+
+		<footer>
+			<p>
+				<a href="https://github.com/raw-fun-gaming/stake-engine-client" target="_blank">GitHub</a> |
+				<a href="https://www.npmjs.com/package/stake-engine-client" target="_blank">npm</a> |
+				<a href="https://github.com/raw-fun-gaming/stake-engine-client/wiki" target="_blank">Documentation</a>
+			</p>
+		</footer>
+	</div>
+
+	<script type="module" src="./main.ts"></script>
+</body>
+</html>

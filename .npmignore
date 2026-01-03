@@ -13,3 +13,8 @@ node_modules/
 # Testing
 coverage/
 .nyc_output/
+
+# Demo/docs (not part of npm package)
+demo/
+docs/
+vite.config.ts

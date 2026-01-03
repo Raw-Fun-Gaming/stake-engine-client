@@ -8,6 +8,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "demo": "vite",
+    "build:demo": "vite build",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -21,7 +23,8 @@
   "author": "Planet Blue Invasion Team",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vite": "^7.3.0"
   },
   "peerDependencies": {
     "typescript": ">=4.0.0"
