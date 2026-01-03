@@ -26,6 +26,9 @@ export {
 	requestEndRound,
 	requestEndEvent,
 	requestForceResult,
+	requestReplay,
+	getReplayUrlParams,
+	isReplayMode,
 } from './client';
 
 // Export low-level fetcher for custom implementations
@@ -52,6 +55,7 @@ export type AuthenticateResponse = import('./types').components['schemas']['res_
 export type PlayResponse = import('./types').components['schemas']['res_play'];
 export type BalanceResponse = import('./types').components['schemas']['res_Balance'];
 export type EndRoundResponse = import('./types').components['schemas']['res_end_round'];
+export type ReplayResponse = import('./types').components['schemas']['res_replay'];
 
 /**
  * Version information

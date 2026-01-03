@@ -180,6 +180,53 @@ const result = await requestEndEvent({
 });
 ```
 
+### Replay
+
+#### `requestReplay(options)`
+
+Fetch historical bet data for replay/review purposes.
+
+```typescript
+const replay = await requestReplay({
+  game: string,        // Required: Game identifier
+  version: string,     // Required: Game version
+  mode: string,        // Required: Bet mode
+  event: string,       // Required: Event identifier
+  rgsUrl?: string      // From URL param 'rgs_url' if not provided
+});
+```
+
+**Returns:** `ReplayResponse`
+- `round` - Historical round details including game state
+- `status` - Operation status
+
+#### `isReplayMode()`
+
+Check if the current session is in replay mode.
+
+```typescript
+if (isReplayMode()) {
+  // Handle replay mode
+}
+```
+
+#### `getReplayUrlParams()`
+
+Get all replay-related URL parameters.
+
+```typescript
+const params = getReplayUrlParams();
+// Returns: { replay, amount, game, version, mode, event }
+```
+
+**URL Parameters for Replay:**
+- `replay` - Set to 'true' to enable replay mode
+- `amount` - Original bet amount
+- `game` - Game identifier
+- `version` - Game version
+- `mode` - Bet mode
+- `event` - Event identifier
+
 ### Testing & Debugging
 
 #### `requestForceResult(options)`
@@ -261,6 +308,7 @@ import type {
   ConfigObject,
   AuthenticateResponse,
   PlayResponse,
+  ReplayResponse,
   BetType,
   BaseBetType
 } from 'stake-engine-client';

@@ -11,11 +11,16 @@ Welcome to the comprehensive documentation for the **Stake Engine Client** - a l
 
 ### API Reference
 - **[requestAuthenticate](requestAuthenticate)** - Player authentication
-- **[requestBet](requestBet)** - Place bets and start rounds  
+- **[requestBet](requestBet)** - Place bets and start rounds
 - **[requestEndRound](requestEndRound)** - End betting rounds
 - **[requestBalance](requestBalance)** - Get player balance
 - **[requestEndEvent](requestEndEvent)** - Track game events
+- **[requestReplay](requestReplay)** - Fetch historical bet data for replay
 - **[requestForceResult](requestForceResult)** - Search for specific results (testing)
+
+### Replay Mode
+- **[requestReplay](requestReplay)** - Fetch replay data from RGS
+- **[Replay Helpers](Replay-Helpers)** - `isReplayMode()` and `getReplayUrlParams()`
 
 ### Advanced Usage
 - **[StakeEngineClient Class](StakeEngineClient-Class)** - Custom client instances
@@ -43,6 +48,7 @@ Welcome to the comprehensive documentation for the **Stake Engine Client** - a l
 - **🔧 Configurable** - Low-level access for custom implementations
 - **💰 Smart Conversion** - Automatic amount conversion between formats
 - **🌐 Browser Friendly** - URL parameter fallback for easy integration
+- **🔄 Replay Support** - Fetch and replay historical bet data
 
 ## 📦 Installation
 

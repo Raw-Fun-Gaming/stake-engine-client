@@ -11,18 +11,23 @@ import { fetcher } from './fetcher';
 import { API_AMOUNT_MULTIPLIER } from './constants';
 import type { paths, components } from './types';
 
+// Helper type for filtering paths that have POST operations
+type PathsWithPost = {
+	[K in keyof paths]: paths[K] extends { post: unknown } ? K : never;
+}[keyof paths];
+
 /**
  * Type-safe RGS API client with automatic response parsing
  */
 export class StakeEngineClient {
 	/**
 	 * Make a POST request to the RGS API
-	 * 
+	 *
 	 * @param options - Request configuration
 	 * @returns Typed response data
 	 */
 	async post<
-		T extends keyof paths,
+		T extends PathsWithPost,
 		TResponse = paths[T]['post']['responses'][200]['content']['application/json'],
 	>(options: {
 		url: T;
@@ -90,6 +95,30 @@ const getUrlParams = () => {
 		language: urlParams.get('lang') || 'en',
 		currency: urlParams.get('currency') || 'USD'
 	};
+};
+
+/**
+ * Get replay-specific URL parameters
+ * @returns Object with replay mode flag and parameters
+ */
+export const getReplayUrlParams = () => {
+	const urlParams = new URLSearchParams(window.location.search);
+	return {
+		replay: urlParams.get('replay') === 'true',
+		amount: Number(urlParams.get('amount')) || 0,
+		game: urlParams.get('game') || '',
+		version: urlParams.get('version') || '',
+		mode: urlParams.get('mode') || '',
+		event: urlParams.get('event') || '',
+	};
+};
+
+/**
+ * Check if current session is in replay mode
+ * @returns true if replay=true is in URL params
+ */
+export const isReplayMode = (): boolean => {
+	return new URLSearchParams(window.location.search).get('replay') === 'true';
 };
 
 /**
@@ -328,5 +357,42 @@ export const requestBalance = async (options?: {
 		variables: {
 			sessionID,
 		},
+	});
+};
+
+/**
+ * Replay a historical bet
+ *
+ * @param options - Replay parameters
+ * @returns Replay response with round details
+ *
+ * @example
+ * ```typescript
+ * const replay = await requestReplay({
+ *   game: 'slots-adventure',
+ *   version: '1.0.0',
+ *   mode: 'base',
+ *   event: 'abc123',
+ *   rgsUrl: 'api.stakeengine.com'
+ * });
+ *
+ * console.log('Replaying round:', replay.round?.state);
+ * ```
+ */
+export const requestReplay = async (options: {
+	game: string;
+	version: string;
+	mode: string;
+	event: string;
+	rgsUrl?: string;
+}): Promise<components['schemas']['res_replay']> => {
+	const urlParams = getUrlParams();
+	const rgsUrl = options.rgsUrl || urlParams.rgsUrl;
+
+	if (!rgsUrl) throw new Error('rgsUrl is required (provide in options or rgs_url URL param)');
+
+	return stakeEngineClient.get({
+		rgsUrl,
+		url: `/bet/replay/${options.game}/${options.version}/${options.mode}/${options.event}` as keyof paths,
 	});
 };

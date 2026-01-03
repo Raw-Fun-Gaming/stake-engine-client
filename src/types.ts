@@ -73,6 +73,13 @@ export interface paths {
 		 */
 		post: operations['search'];
 	};
+	'/bet/replay/{game}/{version}/{mode}/{event}': {
+		/**
+		 * Replay Bet
+		 * @description Fetch historical bet data for replay/review purposes. Returns the round details for a specific bet identified by game, version, mode, and event.
+		 */
+		get: operations['replay'];
+	};
 }
 
 export interface components {
@@ -92,6 +99,11 @@ export interface components {
 		};
 		res_search: {
 			balance?: components['schemas']['BalanceObject'];
+			round?: components['schemas']['RoundDetailObject'];
+			error?: components['schemas']['Error'];
+		};
+		res_replay: {
+			status?: components['schemas']['StatusObject'];
 			round?: components['schemas']['RoundDetailObject'];
 			error?: components['schemas']['Error'];
 		};
@@ -453,6 +465,20 @@ export interface operations {
 			200: {
 				content: {
 					'application/json': components['schemas']['res_sess_start'];
+				};
+			};
+		};
+	};
+	/**
+	 * Replay Bet
+	 * @description Fetch historical bet data for replay/review purposes.
+	 */
+	replay: {
+		responses: {
+			/** @description OK */
+			200: {
+				content: {
+					'application/json': components['schemas']['res_replay'];
 				};
 			};
 		};
