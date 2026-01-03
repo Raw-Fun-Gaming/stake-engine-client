@@ -269,7 +269,7 @@ async function handleManualReplay() {
 	show(replaySection);
 
 	try {
-		const response = await requestReplay({
+		const response = await replay({
 			game,
 			version,
 			mode,
