@@ -1,178 +1,138 @@
 # Getting Started
 
-This guide will help you get up and running with the Stake Engine Client quickly.
+This guide walks you through setting up a Stake Engine game from scratch and testing the API using the interactive demo page.
 
-## 📦 Installation
+## Prerequisites
 
-Install the package using npm:
+- A [Stake Engine](https://stake-engine.com/) account
+- Node.js (for local development, optional)
+
+## Step 1: Create Your Game on Stake Engine
+
+1. **Sign up** at [stake-engine.com](https://stake-engine.com/) if you haven't already
+2. **Create a Publisher** - This represents your game studio or brand
+3. **Create a New Game** - Give it a name and configure basic settings
+
+## Step 2: Upload Math Books
+
+Math books define the game outcomes and probabilities. You can use the included demo math files or create your own.
+
+1. In your game page, click **Files** > **Import Files** > **Math**
+2. Upload the files from [`demo/math/`](https://github.com/raw-fun-gaming/stake-engine-client/tree/main/demo/math) folder:
+   - `base.csv` - Human-readable format
+   - `base.json` - JSON format
+   - `base.jsonl` - JSON Lines format
+   - `base.zst` - Compressed format
+
+## Step 3: Upload Frontend (Optional)
+
+You have two options for the game frontend:
+
+### Option A: Use Our Demo Page (Recommended for Testing)
+
+Upload a minimal `index.html` file as a placeholder:
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>Game</title></head>
+<body><p>Use the API Demo to test this game.</p></body>
+</html>
+```
+
+### Option B: Build and Upload the Demo Page
+
+Build the interactive demo and upload it as your frontend:
 
 ```bash
-npm install stake-engine-client
+git clone https://github.com/raw-fun-gaming/stake-engine-client.git
+cd stake-engine-client
+npm install
+npm run build:demo
 ```
 
-Or using yarn:
+Then upload the contents of the `docs/` folder via **Files** > **Import Files** > **Frontend**.
+
+## Step 4: Launch and Test
+
+1. In your game page, click **Launch Game**
+2. The game will open in a new window with URL parameters like:
+   ```
+   https://your-game.stake-engine.com/?sessionID=xxx&rgs_url=rgs.stake-engine.com&lang=en
+   ```
+
+### Testing with the Live Demo
+
+If you uploaded a placeholder frontend, use the hosted demo page:
+
+1. Copy your game URL (including all parameters)
+2. Go to [raw-fun-gaming.github.io/stake-engine-client](https://raw-fun-gaming.github.io/stake-engine-client/)
+3. Paste the URL and click **Parse URL**
+4. Click **Authenticate** to connect
+
+### Testing with Local Demo
+
+Run the demo locally for development:
 
 ```bash
-yarn add stake-engine-client
+npm run demo
 ```
 
-## 🚀 Quick Setup
+Open `http://localhost:5173` and paste your game URL.
 
-### Option 1: URL Parameter Configuration (Recommended for browsers)
+## Using the Demo Page
 
-If you're building a web application, the easiest way to configure the client is through URL parameters:
+Once authenticated, you can test all API functions:
 
+| Button | Function | Description |
+|--------|----------|-------------|
+| **Get Balance** | `requestBalance` | Check player's current balance |
+| **Place Bet** | `requestBet` | Start a new betting round |
+| **End Round** | `requestEndRound` | Complete the current round |
+| **End Event** | `requestEndEvent` | End a specific game event |
+| **Force Result** | `requestForceResult` | Search for specific outcomes (testing) |
+| **Replay** | `requestReplay` | Fetch historical bet data |
+
+### Common Workflow
+
+1. **Authenticate** - Connect to RGS with session
+2. **Place Bet** - Enter amount and mode, click Submit
+3. **End Round** - Complete the round to see results and update balance
+4. Repeat as needed
+
+### Replay Mode
+
+To test replay functionality:
+
+1. Switch to **Replay** mode in the demo page
+2. Enter Game ID, Version, Mode, and Event ID
+3. Click **Load Replay** to fetch historical data
+
+Or paste a replay URL directly:
 ```
-https://your-game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com&lang=en&currency=USD
-```
-
-With URL parameters, you can use most functions without passing options:
-
-```typescript
-import { requestAuthenticate, requestBet, requestBalance } from 'stake-engine-client';
-
-// All these functions will automatically use URL parameters
-const auth = await requestAuthenticate();
-const balance = await requestBalance();
-const bet = await requestBet({
-  amount: 1.00,
-  mode: 'base'
-  // currency defaults to 'USD' from URL param
-});
-```
-
-### Option 2: Explicit Configuration
-
-For Node.js or when you prefer explicit configuration:
-
-```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
-
-const config = {
-  sessionID: 'player-session-123',
-  rgsUrl: 'api.stakeengine.com',
-  language: 'en'
-};
-
-const auth = await requestAuthenticate(config);
-const bet = await requestBet({
-  ...config,
-  currency: 'USD',
-  amount: 1.00,
-  mode: 'base'
-});
+https://game.example.com/?replay=true&game=xxx&version=1&mode=base&event=123&rgs_url=rgs.stake-engine.com
 ```
 
-## 🔧 Configuration Parameters
+## Troubleshooting
 
-### Required Parameters
-- **`sessionID`** - Player session identifier from your authentication system
-- **`rgsUrl`** - RGS server hostname (without protocol, e.g., 'api.stakeengine.com')
+### "player has active bet" Error
 
-### Optional Parameters
-- **`language`** - Player language code (defaults to 'en')
+Click **End Round** to finish the current round before placing a new bet.
 
-### URL Parameter Mapping
-| Function Parameter | URL Parameter | Default |
-|-------------------|---------------|---------|
-| `sessionID` | `sessionID` | - |
-| `rgsUrl` | `rgs_url` | - |
-| `language` | `lang` | `'en'` |
-| `currency` | `currency` | `'USD'` |
+### Authentication Failed
 
-## 🎯 Basic Usage Flow
+- Verify your `sessionID` hasn't expired
+- Check that `rgs_url` is correct
+- Ensure your game is properly launched on Stake Engine
 
-Here's a typical game session flow:
+### CORS Errors
 
-```typescript
-import { 
-  requestAuthenticate, 
-  requestBet, 
-  requestEndRound, 
-  requestBalance 
-} from 'stake-engine-client';
+The RGS server handles CORS. If you see CORS errors, verify:
+- You're using the correct `rgs_url`
+- Your game is properly configured on Stake Engine
 
-// 1. Authenticate player
-const auth = await requestAuthenticate();
-console.log('Player balance:', auth.balance?.amount);
-console.log('Bet levels:', auth.config?.betLevels);
+## Next Steps
 
-// 2. Place a bet
-const bet = await requestBet({
-  amount: 1.00,
-  mode: 'base'
-  // currency defaults to 'USD' from URL param
-});
-
-if (bet.status?.statusCode === 'SUCCESS') {
-  console.log('Bet placed! Round ID:', bet.round?.roundID);
-  console.log('Payout multiplier:', bet.round?.payoutMultiplier);
-} else {
-  console.log('Bet failed:', bet.status?.statusMessage);
-}
-
-// 3. End the round
-const endResult = await requestEndRound();
-console.log('Round ended, new balance:', endResult.balance?.amount);
-
-// 4. Check balance anytime
-const currentBalance = await requestBalance();
-console.log('Current balance:', currentBalance.balance?.amount);
-```
-
-## 🛡️ Error Handling
-
-Always check the status code in responses:
-
-```typescript
-const bet = await requestBet({
-  amount: 1.00,
-  mode: 'base'
-  // currency defaults to 'USD' from URL param
-});
-
-switch (bet.status?.statusCode) {
-  case 'SUCCESS':
-    console.log('Bet placed successfully!');
-    break;
-  case 'ERR_IPB':
-    console.log('Insufficient player balance');
-    break;
-  case 'ERR_IS':
-    console.log('Invalid session or session expired');
-    break;
-  default:
-    console.log('Error:', bet.status?.statusMessage);
-}
-```
-
-## 💰 Amount Conversion
-
-The client automatically handles amount conversion:
-
-```typescript
-// Input: Dollar amounts (human-readable)
-const bet = await requestBet({
-  currency: 'USD',
-  amount: 1.00,  // $1.00
-  mode: 'base'
-});
-
-// The client converts this to API format (1000000) automatically
-// Responses contain amounts in API format, divide by API_AMOUNT_MULTIPLIER for display
-```
-
-## 🔄 Next Steps
-
-Now that you have the basics:
-
-1. **Explore the API** - Check out individual function pages for detailed usage
-2. **Handle Errors** - Read the [Error Handling](Error-Handling) guide
-3. **See Examples** - Browse [Usage Patterns](Usage-Patterns) for real-world scenarios
-4. **Advanced Features** - Learn about [TypeScript Types](TypeScript-Types) and custom clients
-
-## 🆘 Need Help?
-
-- **[Common Issues](Common-Issues)** - Solutions to frequent problems
-- **[Status Codes](Status-Codes)** - Complete reference of error codes
-- **[GitHub Issues](https://github.com/raw-fun-gaming/stake-engine-client/issues)** - Report bugs or ask questions
+- [API Reference](requestAuthenticate) - Detailed API documentation
+- [TypeScript Types](TypeScript-Types) - Type definitions
+- [Usage Patterns](Usage-Patterns) - Real-world examples
