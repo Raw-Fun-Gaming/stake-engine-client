@@ -36,9 +36,7 @@ export {
 export {
 	requestAuthenticate, // @deprecated - use authenticate
 	requestBalance, // @deprecated - use getBalance
-	requestPlay, // @deprecated - use play
 	requestBet, // @deprecated - use play
-	bet, // @deprecated - use play
 	requestEndRound, // @deprecated - use endRound
 	requestEndEvent, // @deprecated - use endEvent
 	requestForceResult, // @deprecated - use forceResult

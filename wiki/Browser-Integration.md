@@ -17,12 +17,12 @@ https://your-game.com/?sessionID=abc123&rgs_url=rgs.stake-engine.com&lang=en&cur
 The client automatically reads these parameters:
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 // No configuration needed - reads from URL automatically
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,
   mode: 'base'
   // sessionID, rgsUrl, currency all from URL
@@ -50,17 +50,17 @@ Basic HTML structure for a game:
   </div>
 
   <script type="module">
-    import { requestAuthenticate, requestBet } from 'https://esm.sh/stake-engine-client';
+    import { authenticate, play } from 'https://esm.sh/stake-engine-client';
 
     // Initialize game
     async function init() {
-      const auth = await requestAuthenticate();
+      const auth = await authenticate();
       document.getElementById('balance').textContent =
         `Balance: $${(auth.balance?.amount || 0) / 1000000}`;
     }
 
     document.getElementById('bet-button').addEventListener('click', async () => {
-      const bet = await requestBet({ amount: 1.00, mode: 'base' });
+      const bet = await play({ amount: 1.00, mode: 'base' });
       console.log('Bet placed:', bet);
     });
 
@@ -76,10 +76,10 @@ Basic HTML structure for a game:
 
 ```typescript
 // src/main.ts
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 async function initGame() {
-  const auth = await requestAuthenticate();
+  const auth = await authenticate();
   console.log('Authenticated:', auth.balance?.amount);
 }
 
@@ -132,7 +132,7 @@ module.exports = {
 
 ```typescript
 import { useEffect, useState } from 'react';
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 import type { components } from 'stake-engine-client';
 
 function Game() {
@@ -141,7 +141,7 @@ function Game() {
 
   useEffect(() => {
     async function init() {
-      const auth = await requestAuthenticate();
+      const auth = await authenticate();
       setBalance(auth.balance?.amount || 0);
     }
     init();
@@ -150,7 +150,7 @@ function Game() {
   async function handleBet() {
     setIsLoading(true);
     try {
-      const bet = await requestBet({ amount: 1.00, mode: 'base' });
+      const bet = await play({ amount: 1.00, mode: 'base' });
       setBalance(bet.balance?.amount || 0);
     } finally {
       setIsLoading(false);
@@ -182,20 +182,20 @@ function Game() {
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 const balance = ref(0);
 const isLoading = ref(false);
 
 onMounted(async () => {
-  const auth = await requestAuthenticate();
+  const auth = await authenticate();
   balance.value = auth.balance?.amount || 0;
 });
 
 async function placeBet() {
   isLoading.value = true;
   try {
-    const bet = await requestBet({ amount: 1.00, mode: 'base' });
+    const bet = await play({ amount: 1.00, mode: 'base' });
     balance.value = bet.balance?.amount || 0;
   } finally {
     isLoading.value = false;
@@ -209,20 +209,20 @@ async function placeBet() {
 ```svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { requestAuthenticate, requestBet } from 'stake-engine-client';
+  import { authenticate, play } from 'stake-engine-client';
 
   let balance = 0;
   let isLoading = false;
 
   onMount(async () => {
-    const auth = await requestAuthenticate();
+    const auth = await authenticate();
     balance = auth.balance?.amount || 0;
   });
 
   async function placeBet() {
     isLoading = true;
     try {
-      const bet = await requestBet({ amount: 1.00, mode: 'base' });
+      const bet = await play({ amount: 1.00, mode: 'base' });
       balance = bet.balance?.amount || 0;
     } finally {
       isLoading = false;
@@ -245,15 +245,15 @@ For quick prototyping without a build step:
 ```html
 <script type="module">
   import {
-    requestAuthenticate,
-    requestBet,
-    requestEndRound
+    authenticate,
+    play,
+    endRound
   } from 'https://esm.sh/stake-engine-client';
 
   window.StakeEngine = {
-    authenticate: requestAuthenticate,
-    bet: requestBet,
-    endRound: requestEndRound
+    authenticate: authenticate,
+    bet: play,
+    endRound: endRound
   };
 </script>
 
@@ -270,11 +270,11 @@ For quick prototyping without a build step:
 Handle network errors and session expiration:
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 async function placeBet() {
   try {
-    const response = await requestBet({ amount: 1.00, mode: 'base' });
+    const response = await play({ amount: 1.00, mode: 'base' });
 
     if (response.status?.statusCode === 'ERR_IS') {
       // Session expired - reload page
@@ -312,11 +312,11 @@ If you encounter CORS errors:
 For local development without URL parameters:
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
 const isDevelopment = window.location.hostname === 'localhost';
 
-const auth = await requestAuthenticate(
+const auth = await authenticate(
   isDevelopment
     ? {
         sessionID: 'dev-session-123',
@@ -334,19 +334,19 @@ http://localhost:3000/?sessionID=test&rgs_url=dev.rgs-server.com&lang=en
 
 ## Performance Tips
 
-1. **Authenticate Once** - Call `requestAuthenticate()` only on game load
+1. **Authenticate Once** - Call `authenticate()` only on game load
 2. **Debounce Balance Checks** - Don't poll balance too frequently
 3. **Handle Loading States** - Show loading UI during API calls
 4. **Cache Configuration** - Store bet levels and game config from authenticate response
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 import type { components } from 'stake-engine-client';
 
 let gameConfig: components['schemas']['Config'] | null = null;
 
 async function initGame() {
-  const auth = await requestAuthenticate();
+  const auth = await authenticate();
 
   // Cache config to avoid repeated authenticate calls
   gameConfig = auth.config || null;
@@ -363,8 +363,8 @@ The package is lightweight and tree-shakable:
 
 Import only what you need:
 ```typescript
-// Only imports requestBet and its dependencies
-import { requestBet } from 'stake-engine-client';
+// Only imports play and its dependencies
+import { play } from 'stake-engine-client';
 ```
 
 ## Browser Compatibility

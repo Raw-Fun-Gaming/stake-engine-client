@@ -31,13 +31,13 @@ console.log(isReplayMode()); // false
 ### Conditional Game Initialization
 
 ```typescript
-import { isReplayMode, requestAuthenticate, requestReplay, getReplayUrlParams } from 'stake-engine-client';
+import { isReplayMode, authenticate, replay, getReplayUrlParams } from 'stake-engine-client';
 
 async function initGame() {
   if (isReplayMode()) {
     // Replay mode - load historical data
     const params = getReplayUrlParams();
-    const replay = await requestReplay({
+    const replay = await replay({
       game: params.game,
       version: params.version,
       mode: params.mode,
@@ -55,7 +55,7 @@ async function initGame() {
 
   } else {
     // Normal mode - authenticate and allow betting
-    const auth = await requestAuthenticate();
+    const auth = await authenticate();
     enableBettingUI(auth.config?.betLevels);
   }
 }
@@ -118,10 +118,10 @@ console.log(params.event);    // 'abc123'
 console.log(params.amount);   // 2.5
 ```
 
-#### With requestReplay
+#### With replay
 
 ```typescript
-import { getReplayUrlParams, requestReplay, isReplayMode } from 'stake-engine-client';
+import { getReplayUrlParams, replay, isReplayMode } from 'stake-engine-client';
 
 async function loadReplay() {
   if (!isReplayMode()) {
@@ -137,7 +137,7 @@ async function loadReplay() {
     return null;
   }
 
-  const replay = await requestReplay({
+  const replay = await replay({
     game: params.game,
     version: params.version,
     mode: params.mode,
@@ -181,8 +181,8 @@ function showReplayInfo() {
 import {
   isReplayMode,
   getReplayUrlParams,
-  requestReplay,
-  requestAuthenticate,
+  replay,
+  authenticate,
   API_AMOUNT_MULTIPLIER
 } from 'stake-engine-client';
 
@@ -207,7 +207,7 @@ class GameManager {
     this.showLoading('Loading replay...');
 
     try {
-      const replay = await requestReplay({
+      const replay = await replay({
         game: params.game,
         version: params.version,
         mode: params.mode,
@@ -235,7 +235,7 @@ class GameManager {
   }
 
   private async initializeNormalMode() {
-    const auth = await requestAuthenticate();
+    const auth = await authenticate();
 
     if (auth.status?.statusCode === 'SUCCESS') {
       this.setupBetting(auth.config, auth.balance);
@@ -346,7 +346,7 @@ const replayUrl = buildReplayUrl(
 
 ## Related Functions
 
-- **[requestReplay](requestReplay)** - Fetch replay data from the server
+- **[replay](replay)** - Fetch replay data from the server
 
 ## See Also
 

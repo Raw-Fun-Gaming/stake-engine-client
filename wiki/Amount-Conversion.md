@@ -28,10 +28,10 @@ console.log(BOOK_AMOUNT_MULTIPLIER);  // 100
 ### Input Conversion (Human → API)
 
 ```typescript
-import { requestBet, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { play, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 // You provide human-readable amounts
-const bet = await requestBet({
+const bet = await play({
   currency: 'USD',
   amount: 2.50,    // $2.50 in dollars
   mode: 'base'
@@ -44,9 +44,9 @@ const bet = await requestBet({
 ### Output Conversion (API → Human)
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
-const balance = await requestBalance();
+const balance = await getBalance();
 
 if (balance.status?.statusCode === 'SUCCESS') {
   // Response contains API format
@@ -64,10 +64,10 @@ if (balance.status?.statusCode === 'SUCCESS') {
 ### Display Balance with Proper Formatting
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 async function displayBalance(): Promise<void> {
-  const balanceInfo = await requestBalance();
+  const balanceInfo = await getBalance();
   
   if (balanceInfo.status?.statusCode === 'SUCCESS' && balanceInfo.balance) {
     const apiAmount = balanceInfo.balance.amount;
@@ -274,7 +274,7 @@ console.log(AmountConverter.isValidPrecision(1.555)); // false
 ### Balance Monitoring with Conversion
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 class BalanceMonitor {
   private lastBalance: number = 0;
@@ -289,7 +289,7 @@ class BalanceMonitor {
     }
   } | null> {
     try {
-      const balanceInfo = await requestBalance();
+      const balanceInfo = await getBalance();
       
       if (balanceInfo.status?.statusCode === 'SUCCESS' && balanceInfo.balance) {
         // Convert from API format
@@ -411,7 +411,7 @@ const converted = amount / API_AMOUNT_MULTIPLIER;
 
 ## 🔗 Related Pages
 
-- **[requestBet](requestBet)** - Automatic amount conversion in betting
-- **[requestBalance](requestBalance)** - Converting balance responses
+- **[play](play)** - Automatic amount conversion in betting
+- **[getBalance](getBalance)** - Converting balance responses
 - **[Error Handling](Error-Handling)** - Handling conversion errors
 - **[Usage Patterns](Usage-Patterns)** - Real-world conversion examples

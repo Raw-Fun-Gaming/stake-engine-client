@@ -210,10 +210,10 @@ type StatusCode = components['schemas']['Status']['statusCode'];
 
 Usage:
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 import type { components } from 'stake-engine-client';
 
-const response = await requestBet({ amount: 1.00, mode: 'base' });
+const response = await play({ amount: 1.00, mode: 'base' });
 
 switch (response.status?.statusCode) {
   case 'SUCCESS':
@@ -235,9 +235,9 @@ switch (response.status?.statusCode) {
 Use TypeScript's type narrowing for safer code:
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
-const response = await requestBet({ amount: 1.00, mode: 'base' });
+const response = await play({ amount: 1.00, mode: 'base' });
 
 // Check for success
 if (response.status?.statusCode === 'SUCCESS') {

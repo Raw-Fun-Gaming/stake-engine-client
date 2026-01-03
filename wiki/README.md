@@ -9,12 +9,12 @@ This directory contains the comprehensive wiki documentation for the Stake Engin
 - **Getting-Started.md** - Installation and setup guide
 
 ### API Reference (One function per page)
-- **requestAuthenticate.md** - Player authentication
-- **requestBet.md** - Place bets and start rounds
-- **requestEndRound.md** - End betting rounds
-- **requestBalance.md** - Get player balance
-- **requestEndEvent.md** - Track game events
-- **requestForceResult.md** - Search for specific results (testing)
+- **authenticate.md** - Player authentication
+- **play.md** - Place bets and start rounds
+- **endRound.md** - End betting rounds
+- **getBalance.md** - Get player balance
+- **endEvent.md** - Track game events
+- **forceResult.md** - Search for specific results (testing)
 
 ### Guides & References
 - **Error-Handling.md** - Comprehensive error handling guide

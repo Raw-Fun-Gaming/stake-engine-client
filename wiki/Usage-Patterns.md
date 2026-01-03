@@ -8,19 +8,19 @@ Complete game session from authentication to bet completion:
 
 ```typescript
 import {
-  requestAuthenticate,
-  requestBet,
-  requestEndRound,
-  requestBalance
+  authenticate,
+  play,
+  endRound,
+  getBalance
 } from 'stake-engine-client';
 
 // 1. Authenticate player when game loads
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 console.log('Initial balance:', auth.balance?.amount);
 console.log('Available bet levels:', auth.config?.betLevels);
 
 // 2. Place a bet
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,  // $1.00
   mode: 'base'
 });
@@ -33,7 +33,7 @@ if (bet.status?.statusCode === 'SUCCESS') {
   await animateGameplay(bet.round);
 
   // 3. End the round
-  const endResult = await requestEndRound();
+  const endResult = await endRound();
   console.log('Final balance:', endResult.balance?.amount);
 } else {
   console.error('Bet failed:', bet.status?.statusMessage);
@@ -45,11 +45,11 @@ if (bet.status?.statusCode === 'SUCCESS') {
 Robust error handling for API calls:
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 async function placeBet(amount: number, mode: string) {
   try {
-    const response = await requestBet({ amount, mode });
+    const response = await play({ amount, mode });
 
     switch (response.status?.statusCode) {
       case 'SUCCESS':
@@ -88,7 +88,7 @@ Using the client in a React application:
 
 ```typescript
 import { useState, useEffect } from 'react';
-import { requestAuthenticate, requestBet, requestBalance } from 'stake-engine-client';
+import { authenticate, play, getBalance } from 'stake-engine-client';
 import type { components } from 'stake-engine-client';
 
 function GameComponent() {
@@ -99,7 +99,7 @@ function GameComponent() {
   // Authenticate on mount
   useEffect(() => {
     async function authenticate() {
-      const auth = await requestAuthenticate();
+      const auth = await authenticate();
       setBalance(auth.balance || null);
     }
     authenticate();
@@ -108,7 +108,7 @@ function GameComponent() {
   async function handlePlaceBet(amount: number) {
     setIsLoading(true);
     try {
-      const response = await requestBet({ amount, mode: 'base' });
+      const response = await play({ amount, mode: 'base' });
 
       if (response.status?.statusCode === 'SUCCESS') {
         setRound(response.round || null);
@@ -122,7 +122,7 @@ function GameComponent() {
   }
 
   async function refreshBalance() {
-    const response = await requestBalance();
+    const response = await getBalance();
     setBalance(response.balance || null);
   }
 
@@ -144,37 +144,37 @@ function GameComponent() {
 Games with multiple events per round:
 
 ```typescript
-import { requestBet, requestEndEvent, requestEndRound } from 'stake-engine-client';
+import { play, endEvent, endRound } from 'stake-engine-client';
 
 async function playMultiStepGame() {
   // 1. Initial bet
-  const bet = await requestBet({ amount: 1.00, mode: 'base' });
+  const bet = await play({ amount: 1.00, mode: 'base' });
   console.log('Initial state:', bet.round?.state);
 
   // 2. Player makes a choice, trigger event 1
-  await requestEndEvent({ eventIndex: 1 });
+  await endEvent({ eventIndex: 1 });
   console.log('After event 1');
 
   // 3. Player makes another choice, trigger event 2
-  await requestEndEvent({ eventIndex: 2 });
+  await endEvent({ eventIndex: 2 });
   console.log('After event 2');
 
   // 4. End the round
-  const result = await requestEndRound();
+  const result = await endRound();
   console.log('Final payout:', result.balance?.amount);
 }
 ```
 
 ## Testing with Force Result
 
-Use `requestForceResult` to find specific outcomes for testing:
+Use `forceResult` to find specific outcomes for testing:
 
 ```typescript
-import { requestForceResult, requestBet } from 'stake-engine-client';
+import { forceResult, play } from 'stake-engine-client';
 
 async function testBonusFeature() {
   // 1. Search for a round with bonus symbols
-  const search = await requestForceResult({
+  const search = await forceResult({
     mode: 'base',
     search: {
       symbol: 'BONUS',
@@ -186,7 +186,7 @@ async function testBonusFeature() {
 
   if (search.results && search.results.length > 0) {
     // 2. Place bet (RGS will use the forced result)
-    const bet = await requestBet({
+    const bet = await play({
       amount: 1.00,
       mode: 'base'
     });
@@ -202,14 +202,14 @@ async function testBonusFeature() {
 Fetch and replay previous bet data:
 
 ```typescript
-import { requestReplay, isReplayMode, getReplayUrlParams } from 'stake-engine-client';
+import { replay, isReplayMode, getReplayUrlParams } from 'stake-engine-client';
 
 // Check if in replay mode
 if (isReplayMode()) {
   const params = getReplayUrlParams();
 
   // Load replay data
-  const replay = await requestReplay({
+  const replay = await replay({
     game: params.game,
     version: params.version,
     mode: params.mode,
@@ -232,10 +232,10 @@ if (isReplayMode()) {
 Convert API amounts to human-readable format:
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 async function displayBalance() {
-  const response = await requestBalance();
+  const response = await getBalance();
   const amount = response.balance?.amount || 0;
   const currency = response.balance?.currency || 'USD';
 
@@ -252,7 +252,7 @@ async function displayBalance() {
 Using the client in a Node.js backend:
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 // Must provide explicit configuration (no URL params in Node.js)
 const config = {
@@ -263,11 +263,11 @@ const config = {
 
 async function serverSideBet(amount: number, mode: string) {
   // Authenticate
-  const auth = await requestAuthenticate(config);
+  const auth = await authenticate(config);
   console.log('Player balance:', auth.balance?.amount);
 
   // Place bet with explicit config
-  const bet = await requestBet({
+  const bet = await play({
     ...config,
     currency: 'USD',
     amount,
@@ -284,10 +284,10 @@ Building a game-specific wrapper:
 
 ```typescript
 import {
-  requestAuthenticate,
-  requestBet,
-  requestEndRound,
-  requestBalance
+  authenticate,
+  play,
+  endRound,
+  getBalance
 } from 'stake-engine-client';
 import type { components } from 'stake-engine-client';
 
@@ -296,7 +296,7 @@ class MyGameClient {
   private balance: number = 0;
 
   async init() {
-    const auth = await requestAuthenticate();
+    const auth = await authenticate();
     this.authenticated = true;
     this.balance = auth.balance?.amount || 0;
     return auth;
@@ -307,7 +307,7 @@ class MyGameClient {
       throw new Error('Must authenticate first');
     }
 
-    const response = await requestBet({ amount: dollars, mode });
+    const response = await play({ amount: dollars, mode });
 
     if (response.status?.statusCode !== 'SUCCESS') {
       throw new Error(response.status?.statusMessage || 'Bet failed');
@@ -318,7 +318,7 @@ class MyGameClient {
   }
 
   async endRound() {
-    const response = await requestEndRound();
+    const response = await endRound();
     this.balance = response.balance?.amount || this.balance;
     return response;
   }
@@ -342,7 +342,7 @@ await game.endRound();
 Check balance periodically (e.g., if external transactions can occur):
 
 ```typescript
-import { requestBalance } from 'stake-engine-client';
+import { getBalance } from 'stake-engine-client';
 
 let balanceCheckInterval: NodeJS.Timeout;
 
@@ -350,7 +350,7 @@ function startBalanceMonitoring(onBalanceChange: (amount: number) => void) {
   let lastBalance = 0;
 
   balanceCheckInterval = setInterval(async () => {
-    const response = await requestBalance();
+    const response = await getBalance();
     const currentBalance = response.balance?.amount || 0;
 
     if (currentBalance !== lastBalance) {

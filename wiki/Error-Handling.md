@@ -48,9 +48,9 @@ interface ErrorResponse {
 ### Basic Error Checking
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
-const bet = await requestBet({
+const bet = await play({
   currency: 'USD',
   amount: 1.00,
   mode: 'base'
@@ -157,9 +157,9 @@ class ErrorHandler {
 }
 
 // Usage
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 const success = ErrorHandler.handle(auth, 'Authentication');
 
 if (success) {
@@ -171,7 +171,7 @@ if (success) {
 ### Retry Logic for Network Errors
 
 ```typescript
-import { requestBalance } from 'stake-engine-client';
+import { getBalance } from 'stake-engine-client';
 
 async function requestWithRetry<T>(
   operation: () => Promise<T>,
@@ -204,7 +204,7 @@ async function requestWithRetry<T>(
 
 // Usage with balance check
 const balance = await requestWithRetry(
-  () => requestBalance(),
+  () => getBalance(),
   3,
   1000
 );
@@ -219,7 +219,7 @@ if (balance?.status?.statusCode === 'SUCCESS') {
 ### Session Management
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 class SessionManager {
   private static sessionValid: boolean = false;
@@ -236,7 +236,7 @@ class SessionManager {
     
     try {
       console.log('🔐 Refreshing session...');
-      const auth = await requestAuthenticate();
+      const auth = await authenticate();
       
       if (auth.status?.statusCode === 'SUCCESS') {
         this.sessionValid = true;
@@ -300,7 +300,7 @@ class SessionManager {
 
 // Usage
 const bet = await SessionManager.executeWithSession(() => 
-  requestBet({
+  play({
     currency: 'USD',
     amount: 1.00,
     mode: 'base'
@@ -391,7 +391,7 @@ function App() {
 ### Parameter Validation
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 class ParameterValidator {
   static validateBetParams(params: {
@@ -451,7 +451,7 @@ class ParameterValidator {
     }
     
     try {
-      return await requestBet(params);
+      return await play(params);
     } catch (error) {
       console.error('❌ Bet execution error:', error);
       return {

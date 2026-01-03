@@ -88,12 +88,12 @@ Once authenticated, you can test all API functions:
 
 | Button | Function | Description |
 |--------|----------|-------------|
-| **Get Balance** | `requestBalance` | Check player's current balance |
-| **Place Bet** | `requestBet` | Start a new betting round |
-| **End Round** | `requestEndRound` | Complete the current round |
-| **End Event** | `requestEndEvent` | End a specific game event |
-| **Force Result** | `requestForceResult` | Search for specific outcomes (testing) |
-| **Replay** | `requestReplay` | Fetch historical bet data |
+| **Get Balance** | `getBalance` | Check player's current balance |
+| **Place Bet** | `play` | Start a new betting round |
+| **End Round** | `endRound` | Complete the current round |
+| **End Event** | `endEvent` | End a specific game event |
+| **Force Result** | `forceResult` | Search for specific outcomes (testing) |
+| **Replay** | `replay` | Fetch historical bet data |
 
 ### Common Workflow
 
@@ -135,6 +135,6 @@ The RGS server handles CORS. If you see CORS errors, verify:
 
 ## Next Steps
 
-- [API Reference](requestAuthenticate) - Detailed API documentation
+- [API Reference](authenticate) - Detailed API documentation
 - [TypeScript Types](TypeScript-Types) - Type definitions
 - [Usage Patterns](Usage-Patterns) - Real-world examples

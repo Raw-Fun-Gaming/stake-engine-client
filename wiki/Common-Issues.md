@@ -11,17 +11,17 @@ Solutions to frequently encountered problems when using the Stake Engine Client.
 **Solution:**
 ```typescript
 // ❌ Bad - no sessionID
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
 // ✅ Good - provide sessionID explicitly (Node.js)
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID: 'player-session-123',
   rgsUrl: 'rgs.stake-engine.com'
 });
 
 // ✅ Good - use URL parameters (Browser)
 // URL: ?sessionID=abc123&rgs_url=rgs.stake-engine.com
-const auth = await requestAuthenticate();  // Auto-reads from URL
+const auth = await authenticate();  // Auto-reads from URL
 ```
 
 ### "Invalid Session" (ERR_IS)
@@ -35,7 +35,7 @@ const auth = await requestAuthenticate();  // Auto-reads from URL
 - Ensure the session was created properly by Stake Engine
 
 ```typescript
-const response = await requestBet({ amount: 1.00, mode: 'base' });
+const response = await play({ amount: 1.00, mode: 'base' });
 
 if (response.status?.statusCode === 'ERR_IS') {
   // Session expired - reload game
@@ -52,14 +52,14 @@ if (response.status?.statusCode === 'ERR_IS') {
 **Solution:** End the current round first
 
 ```typescript
-const bet = await requestBet({ amount: 1.00, mode: 'base' });
+const bet = await play({ amount: 1.00, mode: 'base' });
 
 if (bet.status?.statusCode === 'ERR_PAB') {
   // End the existing round
-  await requestEndRound();
+  await endRound();
 
   // Now place the new bet
-  const newBet = await requestBet({ amount: 1.00, mode: 'base' });
+  const newBet = await play({ amount: 1.00, mode: 'base' });
 }
 ```
 
@@ -69,7 +69,7 @@ if (bet.status?.statusCode === 'ERR_PAB') {
 
 **Solution:**
 ```typescript
-const bet = await requestBet({ amount: 1.00, mode: 'base' });
+const bet = await play({ amount: 1.00, mode: 'base' });
 
 if (bet.status?.statusCode === 'ERR_IPB') {
   alert('Insufficient balance. Please add funds.');
@@ -85,13 +85,13 @@ if (bet.status?.statusCode === 'ERR_IPB') {
 
 ```typescript
 // ✅ Good - use dollars
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,  // $1.00
   mode: 'base'
 });
 
 // ❌ Bad - don't use API format with high-level methods
-const bet = await requestBet({
+const bet = await play({
   amount: 1000000,  // Wrong! This would be $1,000!
   mode: 'base'
 });
@@ -127,7 +127,7 @@ await stakeEngineClient.post({
 **Solution:**
 ```typescript
 // ✅ Verify rgsUrl is correct (no protocol)
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID: 'abc123',
   rgsUrl: 'rgs.stake-engine.com'  // ✅ Good
   // rgsUrl: 'https://rgs.stake-engine.com'  // ❌ Bad
@@ -165,10 +165,10 @@ Correct parameter names:
 
 ```typescript
 // ❌ Bad - tries to access window.location
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
 // ✅ Good - explicit config
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID: process.env.SESSION_ID,
   rgsUrl: process.env.RGS_URL,
   language: 'en'
@@ -184,9 +184,9 @@ const auth = await requestAuthenticate({
 **Solution:** Use optional chaining and null checks
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
-const bet = await requestBet({ amount: 1.00, mode: 'base' });
+const bet = await play({ amount: 1.00, mode: 'base' });
 
 // ❌ Bad - may throw if balance is undefined
 console.log(bet.balance.amount);
@@ -238,7 +238,7 @@ import { components } from 'stake-engine-client';
 
 ```typescript
 // ✅ Good - tree-shakable
-import { requestBet, requestAuthenticate } from 'stake-engine-client';
+import { play, authenticate } from 'stake-engine-client';
 
 // ❌ Bad - imports everything
 import * as StakeEngine from 'stake-engine-client';
@@ -287,14 +287,14 @@ try {
 
 ### Replay Data Not Loading
 
-**Problem:** `requestReplay` returns error
+**Problem:** `replay` returns error
 
 **Solution:**
 ```typescript
-import { requestReplay } from 'stake-engine-client';
+import { replay } from 'stake-engine-client';
 
 try {
-  const replay = await requestReplay({
+  const replay = await replay({
     game: 'my-game',
     version: '1',
     mode: 'base',
@@ -329,21 +329,21 @@ Verify:
 ```typescript
 // ❌ Bad - authenticates repeatedly
 async function bet() {
-  await requestAuthenticate();  // Slow!
-  await requestBet({ amount: 1.00, mode: 'base' });
+  await authenticate();  // Slow!
+  await play({ amount: 1.00, mode: 'base' });
 }
 
 // ✅ Good - authenticate once
 let authenticated = false;
 
 async function init() {
-  await requestAuthenticate();
+  await authenticate();
   authenticated = true;
 }
 
 async function bet() {
   if (!authenticated) await init();
-  await requestBet({ amount: 1.00, mode: 'base' });
+  await play({ amount: 1.00, mode: 'base' });
 }
 ```
 
@@ -351,7 +351,7 @@ async function bet() {
 
 1. **Check the response status**
    ```typescript
-   const response = await requestBet({ amount: 1.00, mode: 'base' });
+   const response = await play({ amount: 1.00, mode: 'base' });
    console.log('Status:', response.status?.statusCode);
    console.log('Message:', response.status?.statusMessage);
    ```
@@ -360,10 +360,10 @@ async function bet() {
 
 3. **Log all API calls**
    ```typescript
-   import { requestBet } from 'stake-engine-client';
+   import { play } from 'stake-engine-client';
 
-   const originalBet = requestBet;
-   requestBet = async (options) => {
+   const originalBet = play;
+   play = async (options) => {
      console.log('Placing bet:', options);
      const result = await originalBet(options);
      console.log('Bet result:', result);

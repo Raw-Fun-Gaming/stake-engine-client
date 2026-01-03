@@ -26,13 +26,13 @@ The client automatically reads these parameters, allowing you to call API functi
 With URL parameters present, you can omit configuration from function calls:
 
 ```typescript
-import { requestAuthenticate, requestBet, requestBalance } from 'stake-engine-client';
+import { authenticate, play, getBalance } from 'stake-engine-client';
 
 // All configuration is read from URL automatically
-const auth = await requestAuthenticate();
-const balance = await requestBalance();
+const auth = await authenticate();
+const balance = await getBalance();
 
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,
   mode: 'base'
   // sessionID, rgsUrl, language, currency all come from URL
@@ -44,10 +44,10 @@ const bet = await requestBet({
 You can still explicitly pass parameters to override URL values:
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 // Override URL parameters with explicit values
-const bet = await requestBet({
+const bet = await play({
   sessionID: 'custom-session',  // Override URL sessionID
   rgsUrl: 'custom.rgs-server.com',  // Override URL rgs_url
   currency: 'EUR',  // Override URL currency
@@ -82,9 +82,9 @@ URL parameters are automatically detected using `window.location.search`:
 
 ```typescript
 // Automatically works in browser
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 // Reads from window.location.search
 ```
 
@@ -93,10 +93,10 @@ const auth = await requestAuthenticate();
 In Node.js, there's no browser `window` object, so you must explicitly provide configuration:
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
 // Must provide explicit config in Node.js
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com',
   language: 'en'
@@ -141,12 +141,12 @@ const currency = params.get('currency') || 'USD';
 ```typescript
 // Game launched from: ?sessionID=abc&rgs_url=rgs.example.com&lang=en&currency=USD
 
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 // Uses URL params automatically
 
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,
   mode: 'base'
   // currency, sessionID, rgsUrl all from URL
@@ -156,7 +156,7 @@ const bet = await requestBet({
 ### Explicit Configuration (Node.js)
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 const config = {
   sessionID: process.env.SESSION_ID,
@@ -164,8 +164,8 @@ const config = {
   language: 'en'
 };
 
-const auth = await requestAuthenticate(config);
-const bet = await requestBet({
+const auth = await authenticate(config);
+const bet = await play({
   ...config,
   currency: 'USD',
   amount: 1.00,
@@ -179,9 +179,9 @@ const bet = await requestBet({
 // URL provides sessionID and rgs_url
 // But we want to override currency
 
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
-const bet = await requestBet({
+const bet = await play({
   currency: 'EUR',  // Override URL currency
   amount: 1.00,
   mode: 'base'

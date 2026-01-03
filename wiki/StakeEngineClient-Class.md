@@ -4,7 +4,7 @@ The `StakeEngineClient` class provides a low-level, type-safe interface for maki
 
 ## Overview
 
-While most users will use the convenience methods like `requestBet()` and `requestAuthenticate()`, the `StakeEngineClient` class allows you to:
+While most users will use the convenience methods like `play()` and `authenticate()`, the `StakeEngineClient` class allows you to:
 - Make custom API calls not covered by convenience methods
 - Build your own abstractions on top of the RGS API
 - Access the full OpenAPI type system for complete type safety
@@ -171,7 +171,7 @@ try {
 
 ### When to Use Each
 
-**Use High-Level Methods** (`requestBet`, etc.) when:
+**Use High-Level Methods** (`play`, etc.) when:
 - You're calling standard API operations
 - You want automatic amount conversion
 - You want URL parameter fallback support

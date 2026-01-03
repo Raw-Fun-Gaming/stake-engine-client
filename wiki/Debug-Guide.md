@@ -9,7 +9,7 @@ Comprehensive debugging strategies for the Stake Engine Client.
 Log all API calls and responses:
 
 ```typescript
-import { requestBet, requestAuthenticate } from 'stake-engine-client';
+import { play, authenticate } from 'stake-engine-client';
 
 // Wrapper function with logging
 async function debugRequest<T>(
@@ -32,12 +32,12 @@ async function debugRequest<T>(
 
 // Usage
 const auth = await debugRequest(
-  () => requestAuthenticate(),
+  () => authenticate(),
   'Authenticate'
 );
 
 const bet = await debugRequest(
-  () => requestBet({ amount: 1.00, mode: 'base' }),
+  () => play({ amount: 1.00, mode: 'base' }),
   'Place Bet'
 );
 ```
@@ -74,9 +74,9 @@ console.log('URL Parameters:', {
 });
 
 // Verify they're being used
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 console.log('Auth used:', {
   balance: auth.balance,
   config: auth.config
@@ -88,12 +88,12 @@ console.log('Auth used:', {
 Verify authentication is working correctly:
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
 try {
   console.log('Authenticating...');
 
-  const auth = await requestAuthenticate({
+  const auth = await authenticate({
     sessionID: 'your-session-id',
     rgsUrl: 'rgs.stake-engine.com',
     language: 'en'
@@ -121,7 +121,7 @@ try {
 Track bet lifecycle:
 
 ```typescript
-import { requestBet, requestEndRound } from 'stake-engine-client';
+import { play, endRound } from 'stake-engine-client';
 
 async function debugBet(amount: number, mode: string) {
   console.group('Place Bet');
@@ -130,7 +130,7 @@ async function debugBet(amount: number, mode: string) {
   try {
     // Place bet
     const betStart = performance.now();
-    const bet = await requestBet({ amount, mode });
+    const bet = await play({ amount, mode });
     console.log('Bet placed in', performance.now() - betStart, 'ms');
 
     console.log('Bet Response:', {
@@ -150,7 +150,7 @@ async function debugBet(amount: number, mode: string) {
     // End round
     console.log('Ending round...');
     const endStart = performance.now();
-    const end = await requestEndRound();
+    const end = await endRound();
     console.log('Round ended in', performance.now() - endStart, 'ms');
 
     console.log('End Result:', {
@@ -222,16 +222,16 @@ function logError(fn: string, error: any, details?: any) {
 }
 
 // Usage
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 try {
-  const bet = await requestBet({ amount: 1.00, mode: 'base' });
+  const bet = await play({ amount: 1.00, mode: 'base' });
 
   if (bet.status?.statusCode !== 'SUCCESS') {
-    logError('requestBet', bet.status, { amount: 1.00, mode: 'base' });
+    logError('play', bet.status, { amount: 1.00, mode: 'base' });
   }
 } catch (error) {
-  logError('requestBet', error, { amount: 1.00, mode: 'base' });
+  logError('play', error, { amount: 1.00, mode: 'base' });
 }
 
 // View error log
@@ -277,15 +277,15 @@ async function measurePerformance<T>(
 }
 
 // Usage
-import { requestBet, requestAuthenticate } from 'stake-engine-client';
+import { play, authenticate } from 'stake-engine-client';
 
 await measurePerformance(
-  () => requestAuthenticate(),
+  () => authenticate(),
   'authenticate'
 );
 
 await measurePerformance(
-  () => requestBet({ amount: 1.00, mode: 'base' }),
+  () => play({ amount: 1.00, mode: 'base' }),
   'bet'
 );
 
@@ -336,13 +336,13 @@ class GameStateDebugger {
 const stateDebugger = new GameStateDebugger();
 
 // Usage
-import { requestBet, requestEndRound } from 'stake-engine-client';
+import { play, endRound } from 'stake-engine-client';
 
 // After authentication
 stateDebugger.logState({ balance: 10000000, isPlaying: false });
 
 // After bet
-const bet = await requestBet({ amount: 1.00, mode: 'base' });
+const bet = await play({ amount: 1.00, mode: 'base' });
 stateDebugger.logState({
   balance: bet.balance?.amount ?? 0,
   roundID: bet.round?.roundID ?? null,
@@ -350,7 +350,7 @@ stateDebugger.logState({
 });
 
 // After end round
-const end = await requestEndRound();
+const end = await endRound();
 stateDebugger.logState({
   balance: end.balance?.amount ?? 0,
   isPlaying: false
@@ -390,7 +390,7 @@ const response = await fetcher({
 Debug replay functionality:
 
 ```typescript
-import { isReplayMode, getReplayUrlParams, requestReplay } from 'stake-engine-client';
+import { isReplayMode, getReplayUrlParams, replay } from 'stake-engine-client';
 
 console.log('Is Replay Mode:', isReplayMode());
 
@@ -399,7 +399,7 @@ if (isReplayMode()) {
   console.log('Replay Parameters:', params);
 
   try {
-    const replay = await requestReplay({
+    const replay = await replay({
       game: params.game,
       version: params.version,
       mode: params.mode,
@@ -437,7 +437,7 @@ import * as StakeEngine from 'stake-engine-client';
   });
 };
 (window as any).debugBet = async (amount = 1.00, mode = 'base') => {
-  const bet = await StakeEngine.requestBet({ amount, mode });
+  const bet = await StakeEngine.play({ amount, mode });
   console.log(bet);
   return bet;
 };
@@ -457,7 +457,7 @@ debugParams()
 await debugBet(1.00, 'base')
 
 // Manual API call
-await StakeEngine.requestBalance()
+await StakeEngine.getBalance()
 ```
 
 ## Common Debug Checks
@@ -481,7 +481,7 @@ function runDebugChecks() {
   console.log('✓ Fetch API:', typeof fetch !== 'undefined' ? '✅' : '❌');
 
   // 4. Package loaded
-  console.log('✓ Package:', typeof requestBet !== 'undefined' ? '✅' : '❌');
+  console.log('✓ Package:', typeof play !== 'undefined' ? '✅' : '❌');
 
   console.groupEnd();
 }

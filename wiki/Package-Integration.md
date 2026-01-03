@@ -29,12 +29,12 @@ https://your-game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com&lang
 With URL parameters, you can use most functions without passing options:
 
 ```typescript
-import { requestAuthenticate, requestBet, requestBalance } from 'stake-engine-client';
+import { authenticate, play, getBalance } from 'stake-engine-client';
 
 // All these functions will automatically use URL parameters
-const auth = await requestAuthenticate();
-const balance = await requestBalance();
-const bet = await requestBet({
+const auth = await authenticate();
+const balance = await getBalance();
+const bet = await play({
   amount: 1.00,
   mode: 'base'
   // currency defaults to 'USD' from URL param
@@ -46,7 +46,7 @@ const bet = await requestBet({
 For Node.js or when you prefer explicit configuration:
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 const config = {
   sessionID: 'player-session-123',
@@ -54,8 +54,8 @@ const config = {
   language: 'en'
 };
 
-const auth = await requestAuthenticate(config);
-const bet = await requestBet({
+const auth = await authenticate(config);
+const bet = await play({
   ...config,
   currency: 'USD',
   amount: 1.00,
@@ -86,19 +86,19 @@ Here's a typical game session flow:
 
 ```typescript
 import {
-  requestAuthenticate,
-  requestBet,
-  requestEndRound,
-  requestBalance
+  authenticate,
+  play,
+  endRound,
+  getBalance
 } from 'stake-engine-client';
 
 // 1. Authenticate player
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 console.log('Player balance:', auth.balance?.amount);
 console.log('Bet levels:', auth.config?.betLevels);
 
 // 2. Place a bet
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,
   mode: 'base'
   // currency defaults to 'USD' from URL param
@@ -112,11 +112,11 @@ if (bet.status?.statusCode === 'SUCCESS') {
 }
 
 // 3. End the round
-const endResult = await requestEndRound();
+const endResult = await endRound();
 console.log('Round ended, new balance:', endResult.balance?.amount);
 
 // 4. Check balance anytime
-const currentBalance = await requestBalance();
+const currentBalance = await getBalance();
 console.log('Current balance:', currentBalance.balance?.amount);
 ```
 
@@ -125,7 +125,7 @@ console.log('Current balance:', currentBalance.balance?.amount);
 Always check the status code in responses:
 
 ```typescript
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00,
   mode: 'base'
   // currency defaults to 'USD' from URL param
@@ -152,7 +152,7 @@ The client automatically handles amount conversion:
 
 ```typescript
 // Input: Dollar amounts (human-readable)
-const bet = await requestBet({
+const bet = await play({
   currency: 'USD',
   amount: 1.00,  // $1.00
   mode: 'base'

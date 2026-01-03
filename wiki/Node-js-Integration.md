@@ -17,7 +17,7 @@ npm install stake-engine-client
 Always provide explicit configuration in Node.js:
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 const config = {
   sessionID: 'player-session-123',
@@ -26,10 +26,10 @@ const config = {
 };
 
 // Authenticate
-const auth = await requestAuthenticate(config);
+const auth = await authenticate(config);
 
 // Place bet
-const bet = await requestBet({
+const bet = await play({
   ...config,
   currency: 'USD',
   amount: 1.00,
@@ -51,7 +51,7 @@ CURRENCY=USD
 
 ```typescript
 import 'dotenv/config';
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 const config = {
   sessionID: process.env.SESSION_ID!,
@@ -60,10 +60,10 @@ const config = {
 };
 
 async function serverSideBet(amount: number, mode: string) {
-  const auth = await requestAuthenticate(config);
+  const auth = await authenticate(config);
   console.log('Player balance:', auth.balance?.amount);
 
-  const bet = await requestBet({
+  const bet = await play({
     ...config,
     currency: process.env.CURRENCY || 'USD',
     amount,
@@ -80,7 +80,7 @@ Create API endpoints for your game:
 
 ```typescript
 import express from 'express';
-import { requestAuthenticate, requestBet, requestEndRound } from 'stake-engine-client';
+import { authenticate, play, endRound } from 'stake-engine-client';
 
 const app = express();
 app.use(express.json());
@@ -90,7 +90,7 @@ app.post('/api/authenticate', async (req, res) => {
   try {
     const { sessionID, rgsUrl } = req.body;
 
-    const auth = await requestAuthenticate({
+    const auth = await authenticate({
       sessionID,
       rgsUrl,
       language: 'en'
@@ -107,7 +107,7 @@ app.post('/api/bet', async (req, res) => {
   try {
     const { sessionID, rgsUrl, amount, mode, currency } = req.body;
 
-    const bet = await requestBet({
+    const bet = await play({
       sessionID,
       rgsUrl,
       currency,
@@ -126,7 +126,7 @@ app.post('/api/end-round', async (req, res) => {
   try {
     const { sessionID, rgsUrl } = req.body;
 
-    const result = await requestEndRound({
+    const result = await endRound({
       sessionID,
       rgsUrl
     });
@@ -149,7 +149,7 @@ Using the client in Next.js API routes:
 ```typescript
 // pages/api/authenticate.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
 export default async function handler(
   req: NextApiRequest,
@@ -162,7 +162,7 @@ export default async function handler(
   try {
     const { sessionID, rgsUrl } = req.body;
 
-    const auth = await requestAuthenticate({
+    const auth = await authenticate({
       sessionID,
       rgsUrl,
       language: 'en'
@@ -178,7 +178,7 @@ export default async function handler(
 ```typescript
 // pages/api/bet.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 export default async function handler(
   req: NextApiRequest,
@@ -191,7 +191,7 @@ export default async function handler(
   try {
     const { sessionID, rgsUrl, amount, mode, currency } = req.body;
 
-    const bet = await requestBet({
+    const bet = await play({
       sessionID,
       rgsUrl,
       currency,
@@ -211,7 +211,7 @@ export default async function handler(
 Managing player sessions on the server:
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 interface PlayerSession {
   sessionID: string;
@@ -224,7 +224,7 @@ class SessionManager {
   private sessions = new Map<string, PlayerSession>();
 
   async authenticate(sessionID: string, rgsUrl: string) {
-    const auth = await requestAuthenticate({
+    const auth = await authenticate({
       sessionID,
       rgsUrl,
       language: 'en'
@@ -246,7 +246,7 @@ class SessionManager {
       throw new Error('Session not authenticated');
     }
 
-    const bet = await requestBet({
+    const bet = await play({
       sessionID: session.sessionID,
       rgsUrl: session.rgsUrl,
       currency: 'USD',
@@ -273,7 +273,7 @@ export const sessionManager = new SessionManager();
 Robust error handling for server environments:
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 async function safeBet(
   sessionID: string,
@@ -282,7 +282,7 @@ async function safeBet(
   mode: string
 ) {
   try {
-    const response = await requestBet({
+    const response = await play({
       sessionID,
       rgsUrl,
       currency: 'USD',
@@ -322,15 +322,15 @@ import { jest } from '@jest/globals';
 
 // Mock the entire module
 jest.mock('stake-engine-client', () => ({
-  requestAuthenticate: jest.fn(),
-  requestBet: jest.fn(),
-  requestEndRound: jest.fn()
+  authenticate: jest.fn(),
+  play: jest.fn(),
+  endRound: jest.fn()
 }));
 
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 test('places bet successfully', async () => {
-  (requestBet as jest.Mock).mockResolvedValue({
+  (play as jest.Mock).mockResolvedValue({
     status: { statusCode: 'SUCCESS' },
     round: { roundID: '123', payoutMultiplier: 2.5 },
     balance: { amount: 5000000, currency: 'USD' }
@@ -339,7 +339,7 @@ test('places bet successfully', async () => {
   const result = await myBetFunction(1.00, 'base');
 
   expect(result.success).toBe(true);
-  expect(requestBet).toHaveBeenCalledWith({
+  expect(play).toHaveBeenCalledWith({
     sessionID: expect.any(String),
     rgsUrl: expect.any(String),
     currency: 'USD',
@@ -354,7 +354,7 @@ test('places bet successfully', async () => {
 Add logging for debugging:
 
 ```typescript
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 import winston from 'winston';
 
 const logger = winston.createLogger({
@@ -374,7 +374,7 @@ async function loggedBet(
   logger.info('Placing bet', { sessionID, amount, mode });
 
   try {
-    const response = await requestBet({
+    const response = await play({
       sessionID,
       rgsUrl,
       currency: 'USD',
@@ -432,10 +432,10 @@ The package supports both CommonJS and ES modules:
 
 ```typescript
 // ESM
-import { requestBet } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 // CommonJS
-const { requestBet } = require('stake-engine-client');
+const { play } = require('stake-engine-client');
 ```
 
 ## Related Pages

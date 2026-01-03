@@ -218,12 +218,6 @@ export const play = async (options: {
 export const requestBet = play;
 
 /**
- * @deprecated Use `play` instead. Shorter alias for requestBet.
- * @see play
- */
-export const bet = play;
-
-/**
  * End the current betting round
  * 
  * @param options - End round parameters
@@ -429,12 +423,6 @@ export const requestAuthenticate = authenticate;
  * @see getBalance
  */
 export const requestBalance = getBalance;
-
-/**
- * @deprecated Use `play` instead
- * @see play
- */
-export const requestPlay = play;
 
 /**
  * @deprecated Use `endRound` instead

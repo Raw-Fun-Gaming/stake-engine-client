@@ -47,7 +47,7 @@ interface Status {
 
 ## 📊 Status Code Usage by Function
 
-### requestAuthenticate
+### authenticate
 | Status Code | Probability | Meaning |
 |-------------|-------------|---------|
 | `SUCCESS` | 95%+ | Authentication successful |
@@ -55,7 +55,7 @@ interface Status {
 | `ERR_ATE` | 1% | Authentication failed |
 | `ERR_UE` | <1% | Server error |
 
-### requestBet
+### play
 | Status Code | Probability | Meaning |
 |-------------|-------------|---------|
 | `SUCCESS` | 85%+ | Bet placed successfully |
@@ -64,7 +64,7 @@ interface Status {
 | `ERR_GLE` | 1% | Gambling limits exceeded |
 | `ERR_UE` | <1% | Server error |
 
-### requestEndRound
+### endRound
 | Status Code | Probability | Meaning |
 |-------------|-------------|---------|
 | `SUCCESS` | 90%+ | Round ended successfully |
@@ -72,14 +72,14 @@ interface Status {
 | `ERR_IS` | 1% | Session expired |
 | `ERR_UE` | <1% | Server error |
 
-### requestBalance
+### getBalance
 | Status Code | Probability | Meaning |
 |-------------|-------------|---------|
 | `SUCCESS` | 95%+ | Balance retrieved successfully |
 | `ERR_IS` | 4% | Session expired |
 | `ERR_UE` | <1% | Server error |
 
-### requestEndEvent
+### endEvent
 | Status Code | Probability | Meaning |
 |-------------|-------------|---------|
 | `SUCCESS` | 90%+ | Event tracked successfully |
@@ -87,7 +87,7 @@ interface Status {
 | `ERR_IS` | 2% | Session expired |
 | `ERR_UE` | <1% | Server error |
 
-### requestForceResult
+### forceResult
 | Status Code | Probability | Meaning |
 |-------------|-------------|---------|
 | `SUCCESS` | 95%+ | Search completed |
@@ -243,8 +243,8 @@ class StatusLogger {
 }
 
 // Usage in functions
-const bet = await requestBet({ currency: 'USD', amount: 1.00, mode: 'base' });
-StatusLogger.log('requestBet', bet.status?.statusCode || 'NO_STATUS', bet.status?.statusMessage, { amount: 1.00 });
+const bet = await play({ currency: 'USD', amount: 1.00, mode: 'base' });
+StatusLogger.log('play', bet.status?.statusCode || 'NO_STATUS', bet.status?.statusMessage, { amount: 1.00 });
 ```
 
 ## 🎯 Best Practices
@@ -310,7 +310,7 @@ function getErrorMessage(statusCode: string, context: string): string {
 // ✅ Good
 if (response.status?.statusCode !== 'SUCCESS') {
   console.error('RGS Error:', {
-    function: 'requestBet',
+    function: 'play',
     statusCode: response.status.statusCode,
     statusMessage: response.status.statusMessage,
     timestamp: new Date().toISOString()
