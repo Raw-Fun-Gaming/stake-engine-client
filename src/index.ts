@@ -1,18 +1,17 @@
 /**
  * Stake Engine Client
- * 
+ *
  * @description
- * Lightweight TypeScript client extracted from Stake Engine web-sdk 
- * (https://github.com/StakeEngine/web-sdk) for RGS (Remote Gaming Server) 
- * API communication. Contains only essential backend communication code 
+ * Lightweight TypeScript client extracted from Stake Engine web-sdk
+ * (https://github.com/StakeEngine/web-sdk) for RGS (Remote Gaming Server)
+ * API communication. Contains only essential backend communication code
  * without Svelte dependencies or slot game scripts.
- * 
- * This package provides a complete solution for communicating with 
- * Stake Engine's RGS API, including authentication, betting, balance 
+ *
+ * This package provides a complete solution for communicating with
+ * Stake Engine's RGS API, including authentication, betting, balance
  * management, and game event tracking.
- * 
- * @version 1.0.0
- * @author Raw Run Gaming
+ *
+ * @author Raw Fun Gaming
  * @license MIT
  */
 
