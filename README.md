@@ -11,6 +11,8 @@
 
 > Lightweight TypeScript client extracted from [Stake Engine web-sdk](https://github.com/StakeEngine/web-sdk) for RGS (Remote Gaming Server) API communication. Contains only essential backend communication code without Svelte dependencies or slot game scripts.
 
+**[Live Demo](https://raw-fun-gaming.github.io/stake-engine-client/)** | **[Getting Started Guide](https://github.com/raw-fun-gaming/stake-engine-client/wiki/Getting-Started)** | **[API Documentation](https://github.com/raw-fun-gaming/stake-engine-client/wiki)**
+
 ## Features
 
 - 🚀 **Lightweight**: Only essential RGS communication code
