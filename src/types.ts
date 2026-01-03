@@ -1,6 +1,6 @@
 /**
  * Type definitions for Stake Engine RGS API
- * 
+ *
  * This file contains TypeScript type definitions for all API requests and responses.
  * These types are generated from the OpenAPI schema and provide full type safety.
  */
@@ -93,18 +93,22 @@ export interface components {
 			wildMult?: number;
 			gameType?: string;
 		};
-		req_search: {
+		SearchRequest: {
 			mode?: components['schemas']['Mode'];
 			search?: components['schemas']['Search'];
 		};
-		res_search: {
+		SearchResponse: {
 			balance?: components['schemas']['BalanceObject'];
 			round?: components['schemas']['RoundDetailObject'];
 			error?: components['schemas']['Error'];
 		};
-		res_replay: {
-			status?: components['schemas']['StatusObject'];
-			round?: components['schemas']['RoundDetailObject'];
+		ReplayResponse: {
+			/** @description Payout multiplier for the replayed bet */
+			payoutMultiplier?: number;
+			/** @description Cost multiplier for the bet mode */
+			costMultiplier?: number;
+			/** @description Game state array containing simulation data for replay */
+			state?: components['schemas']['GameState'];
 			error?: components['schemas']['Error'];
 		};
 		/**
@@ -114,7 +118,7 @@ export interface components {
 		SessionID: string;
 		/** @description RGS game id */
 		Language: string;
-		req_authenticate: {
+		AuthenticateRequest: {
 			sessionID: components['schemas']['SessionID'];
 			language?: components['schemas']['Language'];
 		};
@@ -219,7 +223,7 @@ export interface components {
 				minimumRoundDuration: number;
 			};
 		};
-		res_authenticate: {
+		AuthenticateResponse: {
 			status?: components['schemas']['StatusObject'];
 			balance?: components['schemas']['BalanceObject'];
 			round?: components['schemas']['RoundDetailObject'];
@@ -227,65 +231,63 @@ export interface components {
 			error?: components['schemas']['Error'];
 			message?: string;
 		};
-		req_Balance: {
+		BalanceRequest: {
 			sessionID: components['schemas']['SessionID'];
 		};
-		res_Balance: {
+		BalanceResponse: {
 			balance?: components['schemas']['BalanceObject'];
 			status?: components['schemas']['StatusObject'];
 			error?: components['schemas']['Error'];
 		};
 		/** @description This field contains values that are not determined by the RGS but by the Game and the Game Provider. Use this field to pass additional information to a game. This information is sent as is and is not validated by the RGS. */
 		Meta: Record<string, never>;
-		req_play: {
+		PlayRequest: {
 			sessionID: components['schemas']['SessionID'];
 			amount: components['schemas']['Amount'];
 			currency: components['schemas']['Currency'];
 			mode: components['schemas']['Mode'];
 			meta?: components['schemas']['Meta'];
 		};
-		res_play: {
+		PlayResponse: {
 			status?: components['schemas']['StatusObject'];
 			balance?: components['schemas']['BalanceObject'];
 			round?: components['schemas']['RoundDetailObject'];
 			error?: components['schemas']['Error'];
 		};
-		req_end_round: {
+		EndRoundRequest: {
 			sessionID: components['schemas']['SessionID'];
 		};
-		res_end_round: {
+		EndRoundResponse: {
 			balance?: components['schemas']['BalanceObject'];
 			status?: components['schemas']['StatusObject'];
 			error?: components['schemas']['Error'];
 		};
-		req_event: {
+		EventRequest: {
 			sessionID: components['schemas']['SessionID'];
 			event?: components['schemas']['Event'];
 		};
-		res_event: {
+		EventResponse: {
 			event?: components['schemas']['Event'];
 			status?: components['schemas']['StatusObject'];
 			error?: components['schemas']['Error'];
 		};
 		/** @description Action determines the actions the RGS will take before sending the request to the game. BET will send an additional bet to the Operator. DECISION will send the request directly to the game. */
 		Action: string;
-		req_action: {
+		ActionRequest: {
 			sessionID: components['schemas']['SessionID'];
 			action: components['schemas']['Action'];
 			meta?: components['schemas']['Meta'];
 		};
-		res_action: {
+		ActionResponse: {
 			status?: components['schemas']['StatusObject'];
 			balance?: components['schemas']['BalanceObject'];
 			action?: components['schemas']['RoundDetailObject'];
 			error?: components['schemas']['Error'];
 		};
-		/** @description Currency the player is playing in */
-		currency: string;
 		/** @description String that represents a session on the casino side. This can be passed back with every API call. */
 		Token: OneOf<[string, Record<string, never>]>;
-		req_sess_start: {
-			currency: components['schemas']['currency'];
+		SessionStartRequest: {
+			currency: components['schemas']['Currency'];
 			token: components['schemas']['Token'];
 			/** @default 100000 */
 			balance?: components['schemas']['BalanceObject'];
@@ -297,7 +299,7 @@ export interface components {
 		};
 		/** @description URL for the game. Pass this url into an iFrame to view the game to begin playing. */
 		URL: string;
-		res_sess_start: {
+		SessionStartResponse: {
 			url?: components['schemas']['URL'];
 			error?: components['schemas']['Error'];
 		};
@@ -317,14 +319,14 @@ export interface operations {
 		/** @description TBD **/
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_search'];
+				'application/json': components['schemas']['SearchRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_search'];
+					'application/json': components['schemas']['SearchResponse'];
 				};
 			};
 		};
@@ -337,14 +339,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_authenticate'];
+				'application/json': components['schemas']['AuthenticateRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_authenticate'];
+					'application/json': components['schemas']['AuthenticateResponse'];
 				};
 			};
 		};
@@ -357,14 +359,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_Balance'];
+				'application/json': components['schemas']['BalanceRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_Balance'];
+					'application/json': components['schemas']['BalanceResponse'];
 				};
 			};
 		};
@@ -377,14 +379,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_play'];
+				'application/json': components['schemas']['PlayRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_play'];
+					'application/json': components['schemas']['PlayResponse'];
 				};
 			};
 		};
@@ -397,14 +399,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_end_round'];
+				'application/json': components['schemas']['EndRoundRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_end_round'];
+					'application/json': components['schemas']['EndRoundResponse'];
 				};
 			};
 		};
@@ -417,14 +419,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_event'];
+				'application/json': components['schemas']['EventRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_event'];
+					'application/json': components['schemas']['EventResponse'];
 				};
 			};
 		};
@@ -437,14 +439,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_action'];
+				'application/json': components['schemas']['ActionRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_action'];
+					'application/json': components['schemas']['ActionResponse'];
 				};
 			};
 		};
@@ -457,14 +459,14 @@ export interface operations {
 		/** @description Session Information */
 		requestBody: {
 			content: {
-				'application/json': components['schemas']['req_sess_start'];
+				'application/json': components['schemas']['SessionStartRequest'];
 			};
 		};
 		responses: {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_sess_start'];
+					'application/json': components['schemas']['SessionStartResponse'];
 				};
 			};
 		};
@@ -478,7 +480,7 @@ export interface operations {
 			/** @description OK */
 			200: {
 				content: {
-					'application/json': components['schemas']['res_replay'];
+					'application/json': components['schemas']['ReplayResponse'];
 				};
 			};
 		};

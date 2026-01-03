@@ -139,11 +139,11 @@ export const isReplayMode = (): boolean => {
  * console.log('Available bet levels:', auth.config?.betLevels);
  * ```
  */
-export const requestAuthenticate = async (options?: {
+export const authenticate = async (options?: {
 	sessionID?: string;
 	rgsUrl?: string;
 	language?: string;
-}): Promise<components['schemas']['res_authenticate']> => {
+}): Promise<components['schemas']['AuthenticateResponse']> => {
 	const urlParams = getUrlParams();
 	const sessionID = options?.sessionID || urlParams.sessionID;
 	const rgsUrl = options?.rgsUrl || urlParams.rgsUrl;
@@ -163,31 +163,31 @@ export const requestAuthenticate = async (options?: {
 
 
 /**
- * Place a bet and start a new round
- * 
- * @param options - Bet parameters
- * @returns Bet response with round details, balance, and game state
- * 
+ * Play a round (place a bet and start a new round)
+ *
+ * @param options - Play parameters
+ * @returns Play response with round details, balance, and game state
+ *
  * @example
  * ```typescript
- * const bet = await requestBet({
+ * const play = await requestPlay({
  *   amount: 1.00,  // $1.00 (automatically converted to API format)
  *   mode: 'base'
  *   // sessionID, currency, rgsUrl from URL params if not provided
  * });
- * 
- * console.log('Round ID:', bet.round?.roundID);
- * console.log('Payout multiplier:', bet.round?.payoutMultiplier);
- * console.log('New balance:', bet.balance?.amount);
+ *
+ * console.log('Round ID:', play.round?.roundID);
+ * console.log('Payout multiplier:', play.round?.payoutMultiplier);
+ * console.log('New balance:', play.balance?.amount);
  * ```
  */
-export const requestBet = async (options: {
+export const play = async (options: {
 	amount: number;
 	mode: string;
 	currency?: string;
 	sessionID?: string;
 	rgsUrl?: string;
-}): Promise<components['schemas']['res_play']> => {
+}): Promise<components['schemas']['PlayResponse']> => {
 	const urlParams = getUrlParams();
 	const sessionID = options.sessionID || urlParams.sessionID;
 	const rgsUrl = options.rgsUrl || urlParams.rgsUrl;
@@ -208,6 +208,22 @@ export const requestBet = async (options: {
 };
 
 /**
+ * @deprecated Use `play` instead. This function will be removed in a future version.
+ *
+ * Place a bet and start a new round
+ *
+ * @param options - Bet parameters
+ * @returns Bet response with round details, balance, and game state
+ */
+export const requestBet = play;
+
+/**
+ * @deprecated Use `play` instead. Shorter alias for requestBet.
+ * @see play
+ */
+export const bet = play;
+
+/**
  * End the current betting round
  * 
  * @param options - End round parameters
@@ -225,10 +241,10 @@ export const requestBet = async (options: {
  * }
  * ```
  */
-export const requestEndRound = async (options?: {
+export const endRound = async (options?: {
 	sessionID?: string;
 	rgsUrl?: string;
-}): Promise<components['schemas']['res_end_round']> => {
+}): Promise<components['schemas']['EndRoundResponse']> => {
 	const urlParams = getUrlParams();
 	const sessionID = options?.sessionID || urlParams.sessionID;
 	const rgsUrl = options?.rgsUrl || urlParams.rgsUrl;
@@ -259,11 +275,11 @@ export const requestEndRound = async (options?: {
  * });
  * ```
  */
-export const requestEndEvent = async (options: {
+export const endEvent = async (options: {
 	eventIndex: number;
 	sessionID?: string;
 	rgsUrl?: string;
-}): Promise<components['schemas']['res_event']> => {
+}): Promise<components['schemas']['EventResponse']> => {
 	const urlParams = getUrlParams();
 	const sessionID = options.sessionID || urlParams.sessionID;
 	const rgsUrl = options.rgsUrl || urlParams.rgsUrl;
@@ -299,7 +315,7 @@ export const requestEndEvent = async (options: {
  * });
  * ```
  */
-export const requestForceResult = async (options: {
+export const forceResult = async (options: {
 	mode: string;
 	search: {
 		bookID?: number;
@@ -310,7 +326,7 @@ export const requestForceResult = async (options: {
 		gameType?: string;
 	};
 	rgsUrl?: string;
-}): Promise<components['schemas']['res_search']> => {
+}): Promise<components['schemas']['SearchResponse']> => {
 	const urlParams = getUrlParams();
 	const rgsUrl = options.rgsUrl || urlParams.rgsUrl;
 
@@ -341,10 +357,10 @@ export const requestForceResult = async (options: {
  * console.log('Current balance:', balance.balance?.amount, balance.balance?.currency);
  * ```
  */
-export const requestBalance = async (options?: {
+export const getBalance = async (options?: {
 	sessionID?: string;
 	rgsUrl?: string;
-}): Promise<components['schemas']['res_Balance']> => {
+}): Promise<components['schemas']['BalanceResponse']> => {
 	const urlParams = getUrlParams();
 	const sessionID = options?.sessionID || urlParams.sessionID;
 	const rgsUrl = options?.rgsUrl || urlParams.rgsUrl;
@@ -364,7 +380,7 @@ export const requestBalance = async (options?: {
  * Replay a historical bet
  *
  * @param options - Replay parameters
- * @returns Replay response with round details
+ * @returns Replay response with payout multiplier and game state
  *
  * @example
  * ```typescript
@@ -376,16 +392,17 @@ export const requestBalance = async (options?: {
  *   rgsUrl: 'api.stakeengine.com'
  * });
  *
- * console.log('Replaying round:', replay.round?.state);
+ * console.log('Payout multiplier:', replay.payoutMultiplier);  // 2.5
+ * console.log('Game state:', replay.state);  // Array of game events
  * ```
  */
-export const requestReplay = async (options: {
+export const replay = async (options: {
 	game: string;
 	version: string;
 	mode: string;
 	event: string;
 	rgsUrl?: string;
-}): Promise<components['schemas']['res_replay']> => {
+}): Promise<components['schemas']['ReplayResponse']> => {
 	const urlParams = getUrlParams();
 	const rgsUrl = options.rgsUrl || urlParams.rgsUrl;
 
@@ -396,3 +413,49 @@ export const requestReplay = async (options: {
 		url: `/bet/replay/${options.game}/${options.version}/${options.mode}/${options.event}` as keyof paths,
 	});
 };
+
+// ============================================================================
+// Deprecated Aliases (Backward Compatibility)
+// ============================================================================
+
+/**
+ * @deprecated Use `authenticate` instead
+ * @see authenticate
+ */
+export const requestAuthenticate = authenticate;
+
+/**
+ * @deprecated Use `getBalance` instead
+ * @see getBalance
+ */
+export const requestBalance = getBalance;
+
+/**
+ * @deprecated Use `play` instead
+ * @see play
+ */
+export const requestPlay = play;
+
+/**
+ * @deprecated Use `endRound` instead
+ * @see endRound
+ */
+export const requestEndRound = endRound;
+
+/**
+ * @deprecated Use `endEvent` instead
+ * @see endEvent
+ */
+export const requestEndEvent = endEvent;
+
+/**
+ * @deprecated Use `forceResult` instead
+ * @see forceResult
+ */
+export const requestForceResult = forceResult;
+
+/**
+ * @deprecated Use `replay` instead
+ * @see replay
+ */
+export const requestReplay = replay;

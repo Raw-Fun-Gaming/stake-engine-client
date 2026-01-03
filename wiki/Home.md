@@ -11,7 +11,7 @@ Welcome to the comprehensive documentation for the **Stake Engine Client** - a l
 
 ### API Reference
 - **[requestAuthenticate](requestAuthenticate)** - Player authentication
-- **[requestBet](requestBet)** - Place bets and start rounds
+- **[requestPlay](requestPlay)** - Play a round (place bet and start)
 - **[requestEndRound](requestEndRound)** - End betting rounds
 - **[requestBalance](requestBalance)** - Get player balance
 - **[requestEndEvent](requestEndEvent)** - Track game events
@@ -59,20 +59,20 @@ npm install stake-engine-client
 ## 🚀 Quick Example
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { requestAuthenticate, requestPlay } from 'stake-engine-client';
 
 // Authenticate (uses URL params if available)
 const auth = await requestAuthenticate();
 
-// Place a bet
-const bet = await requestBet({
+// Play a round
+const play = await requestPlay({
   currency: 'USD',
   amount: 1.00,
   mode: 'base'
 });
 
-console.log('Round ID:', bet.round?.roundID);
-console.log('Payout:', bet.round?.payoutMultiplier);
+console.log('Round ID:', play.round?.roundID);
+console.log('Payout:', play.round?.payoutMultiplier);
 ```
 
 ## 🔗 Links
