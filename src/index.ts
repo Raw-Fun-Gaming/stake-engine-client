@@ -71,19 +71,3 @@ export type PlayResponse = import('./types').components['schemas']['PlayResponse
 export type BalanceResponse = import('./types').components['schemas']['BalanceResponse'];
 export type EndRoundResponse = import('./types').components['schemas']['EndRoundResponse'];
 export type ReplayResponse = import('./types').components['schemas']['ReplayResponse'];
-
-/**
- * Version information
- */
-export const version = '1.0.1';
-
-/**
- * Package metadata
- */
-export const metadata = {
-	name: 'stake-engine-client',
-	version: '1.0.1',
-	description: 'Lightweight TypeScript client extracted from Stake Engine web-sdk for RGS API communication',
-	source: 'https://github.com/StakeEngine/web-sdk',
-	repository: 'https://github.com/raw-fun-gaming/stake-engine-client',
-} as const;
