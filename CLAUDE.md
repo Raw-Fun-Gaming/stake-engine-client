@@ -24,9 +24,9 @@ node test.js           # Run basic package verification test
 
 ### Core Components
 
-- **`src/client.ts`** - High-level API client with convenience methods (`requestAuthenticate`, `requestBet`, etc.)
+- **`src/client.ts`** - High-level API client with convenience methods (`authenticate`, `play`, etc.)
 - **`src/fetcher.ts`** - Low-level HTTP client for direct API calls
-- **`src/types.ts`** - Complete TypeScript definitions from OpenAPI schema (474 lines)
+- **`src/types.ts`** - Complete TypeScript definitions from OpenAPI schema
 - **`src/constants.ts`** - Amount conversion multipliers for API/Book formats
 - **`src/index.ts`** - Main entry point with all exports
 
@@ -34,7 +34,7 @@ node test.js           # Run basic package verification test
 
 The package provides two levels of API interaction:
 
-1. **High-level methods** - Convenient functions like `requestAuthenticate()`, `requestBet()` with automatic amount conversion
+1. **High-level methods** - Convenient functions like `authenticate()`, `play()` with automatic amount conversion
 2. **Low-level client** - Direct `StakeEngineClient.post()` or `fetcher()` for custom implementations
 
 ### Amount Conversion System
