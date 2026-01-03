@@ -1,11 +1,11 @@
-# requestEndEvent
+# endEvent
 
 Track a game event during bet progress. This function is used to signal the completion of specific game events or stages within a betting round.
 
 ## 📋 Syntax
 
 ```typescript
-requestEndEvent(options: EndEventOptions): Promise<EventResponse>
+endEvent(options: EndEventOptions): Promise<EventResponse>
 ```
 
 ## 📝 Parameters
@@ -41,12 +41,12 @@ interface EventResponse {
 ### Basic Event Tracking (Browser with URL params)
 
 ```typescript
-import { requestEndEvent } from 'stake-engine-client';
+import { endEvent } from 'stake-engine-client';
 
 // URL: https://game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com
 
 // Track first game event
-const event1 = await requestEndEvent({
+const event1 = await endEvent({
   eventIndex: 1
 });
 
@@ -58,9 +58,9 @@ if (event1.status?.statusCode === 'SUCCESS') {
 ### With Explicit Configuration
 
 ```typescript
-import { requestEndEvent } from 'stake-engine-client';
+import { endEvent } from 'stake-engine-client';
 
-const event = await requestEndEvent({
+const event = await endEvent({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com',
   eventIndex: 2
@@ -72,12 +72,12 @@ console.log('Event tracked:', event.status?.statusCode === 'SUCCESS');
 ### Sequential Event Tracking
 
 ```typescript
-import { requestBet, requestEndEvent, requestEndRound } from 'stake-engine-client';
+import { requestBet, endEvent, endRound } from 'stake-engine-client';
 
 async function playGameWithEvents() {
   try {
     // 1. Start the round with a bet
-    const bet = await requestBet({
+    const bet = await play({
       currency: 'USD',
       amount: 1.00,
       mode: 'base'
@@ -94,7 +94,7 @@ async function playGameWithEvents() {
     
     // Event 1: Base game spin
     console.log('🎯 Processing base game spin...');
-    const event1 = await requestEndEvent({ eventIndex: 1 });
+    const event1 = await endEvent({ eventIndex: 1 });
     events.push(event1.status?.statusCode === 'SUCCESS');
     
     // Simulate game processing time
@@ -102,16 +102,16 @@ async function playGameWithEvents() {
     
     // Event 2: Bonus feature trigger (if applicable)
     console.log('🎁 Processing bonus feature...');
-    const event2 = await requestEndEvent({ eventIndex: 2 });
+    const event2 = await endEvent({ eventIndex: 2 });
     events.push(event2.status?.statusCode === 'SUCCESS');
     
     // Event 3: Final result calculation
     console.log('🏁 Processing final results...');
-    const event3 = await requestEndEvent({ eventIndex: 3 });
+    const event3 = await endEvent({ eventIndex: 3 });
     events.push(event3.status?.statusCode === 'SUCCESS');
     
     // 3. End the round
-    const endResult = await requestEndRound();
+    const endResult = await endRound();
     
     console.log('📊 Game Summary:');
     console.log(`   Events tracked: ${events.filter(Boolean).length}/${events.length}`);
@@ -132,7 +132,7 @@ await playGameWithEvents();
 ### Event Tracking with Error Recovery
 
 ```typescript
-import { requestEndEvent } from 'stake-engine-client';
+import { endEvent } from 'stake-engine-client';
 
 async function trackEventSafely(eventIndex: number, maxRetries: number = 3): Promise<boolean> {
   let attempts = 0;
@@ -141,7 +141,7 @@ async function trackEventSafely(eventIndex: number, maxRetries: number = 3): Pro
     try {
       attempts++;
       
-      const event = await requestEndEvent({ eventIndex });
+      const event = await endEvent({ eventIndex });
       
       switch (event.status?.statusCode) {
         case 'SUCCESS':
@@ -205,7 +205,7 @@ async function playMultiStageGame(): Promise<void> {
   
   try {
     // Start the game round
-    const bet = await requestBet({
+    const bet = await play({
       currency: 'USD',
       amount: 2.50,
       mode: 'base'
@@ -226,7 +226,7 @@ async function playMultiStageGame(): Promise<void> {
       await new Promise(resolve => setTimeout(resolve, stage.duration));
       
       // Track stage completion
-      const event = await requestEndEvent({ 
+      const event = await endEvent({ 
         eventIndex: stage.eventIndex 
       });
       
@@ -238,7 +238,7 @@ async function playMultiStageGame(): Promise<void> {
     }
     
     // Complete the round
-    const endResult = await requestEndRound();
+    const endResult = await endRound();
     
     if (endResult.status?.statusCode === 'SUCCESS') {
       console.log('🏁 Game completed successfully');
@@ -256,7 +256,7 @@ await playMultiStageGame();
 ### Event Progress Tracking
 
 ```typescript
-import { requestEndEvent } from 'stake-engine-client';
+import { endEvent } from 'stake-engine-client';
 
 class GameEventTracker {
   private currentEventIndex: number = 1;
@@ -271,7 +271,7 @@ class GameEventTracker {
     const eventIndex = this.currentEventIndex;
     
     try {
-      const event = await requestEndEvent({ eventIndex });
+      const event = await endEvent({ eventIndex });
       const success = event.status?.statusCode === 'SUCCESS';
       
       if (success) {
@@ -362,9 +362,9 @@ function updateProgressBar(eventCount: number): void {
 
 ## 🔗 Related Functions
 
-- **[requestBet](requestBet)** - Must be called before tracking events
-- **[requestEndRound](requestEndRound)** - Called after all events are tracked
-- **[requestBalance](requestBalance)** - Check balance during long game sequences
+- **[play](play)** - Must be called before tracking events
+- **[endRound](endRound)** - Called after all events are tracked
+- **[getBalance](getBalance)** - Check balance during long game sequences
 
 ## 🛠️ Implementation Notes
 
@@ -386,6 +386,6 @@ function updateProgressBar(eventCount: number): void {
 
 ## 📚 See Also
 
-- **[requestBet](requestBet)** - Starting rounds that contain events
-- **[requestEndRound](requestEndRound)** - Ending rounds after event tracking
+- **[play](play)** - Starting rounds that contain events
+- **[endRound](endRound)** - Ending rounds after event tracking
 - **[Error Handling](Error-Handling)** - Managing event tracking failures

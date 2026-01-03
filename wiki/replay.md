@@ -1,11 +1,11 @@
-# requestReplay
+# replay
 
 Fetch historical bet data for replay/review purposes. This function retrieves the complete round state for a previously played bet, allowing you to replay the game visuals without making real bets.
 
 ## Syntax
 
 ```typescript
-requestReplay(options: ReplayOptions): Promise<ReplayResponse>
+replay(options: ReplayOptions): Promise<ReplayResponse>
 ```
 
 ## Parameters
@@ -51,9 +51,9 @@ interface ReplayResponse {
 ### Basic Replay Request
 
 ```typescript
-import { requestReplay } from 'stake-engine-client';
+import { replay } from 'stake-engine-client';
 
-const replay = await requestReplay({
+const replay = await replay({
 	game: 'slots-adventure',
 	version: '1.0.0',
 	mode: 'base',
@@ -80,7 +80,7 @@ import {
 if (isReplayMode()) {
 	const params = getReplayUrlParams();
 
-	const replay = await requestReplay({
+	const replay = await replay({
 		game: params.game,
 		version: params.version,
 		mode: params.mode,
@@ -112,7 +112,7 @@ async function initializeGame() {
 		console.log('Original bet amount:', params.amount);
 
 		try {
-			const replay = await requestReplay({
+			const replay = await replay({
 				game: params.game,
 				version: params.version,
 				mode: params.mode,
@@ -160,7 +160,7 @@ function startReplayAnimation(gameState: unknown[] | undefined) {
 ### Error Handling
 
 ```typescript
-import { requestReplay } from 'stake-engine-client';
+import { replay } from 'stake-engine-client';
 
 async function loadReplay(
 	game: string,
@@ -169,7 +169,7 @@ async function loadReplay(
 	event: string
 ) {
 	try {
-		const replay = await requestReplay({
+		const replay = await replay({
 			game,
 			version,
 			mode,
@@ -222,7 +222,7 @@ Replay requests don't use the standard status code system. Instead:
 - **Failure:** Returns an `error` property with details
 
 ```typescript
-const replay = await requestReplay({ game, version, mode, event });
+const replay = await replay({ game, version, mode, event });
 
 if (replay.error) {
 	console.error('Replay failed:', replay.error);
@@ -250,7 +250,7 @@ if (replay.error) {
 
 - **[isReplayMode](Replay-Helpers)** - Check if in replay mode
 - **[getReplayUrlParams](Replay-Helpers)** - Get all replay URL parameters
-- **[requestBet](requestBet)** - Place actual bets (opposite of replay)
+- **[play](play)** - Place actual bets (opposite of replay)
 
 ## See Also
 

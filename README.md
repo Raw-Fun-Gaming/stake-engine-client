@@ -35,16 +35,16 @@ npm install stake-engine-client
 If your URL contains the required parameters (`?sessionID=player-123&rgs_url=api.stakeengine.com&lang=en&currency=USD`), you can call functions without options:
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 // Authenticate player (uses URL params automatically)
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
 console.log('Player balance:', auth.balance?.amount);
 console.log('Available bet levels:', auth.config?.betLevels);
 
 // Place a bet (only specify required bet details)
-const bet = await requestBet({
+const bet = await play({
   amount: 1.00, // $1.00 (automatically converted)
   mode: 'base'
   // currency defaults to USD from URL param or 'USD'
@@ -57,10 +57,10 @@ console.log('Payout multiplier:', bet.round?.payoutMultiplier);
 ### Option 2: Explicit Parameters
 
 ```typescript
-import { requestAuthenticate, requestBet } from 'stake-engine-client';
+import { authenticate, play } from 'stake-engine-client';
 
 // Authenticate player
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com',
   language: 'en'
@@ -70,7 +70,7 @@ console.log('Player balance:', auth.balance?.amount);
 console.log('Available bet levels:', auth.config?.betLevels);
 
 // Place a bet
-const bet = await requestBet({
+const bet = await play({
   sessionID: 'player-session-123',
   currency: 'USD',
   amount: 1.00, // $1.00 (automatically converted)
@@ -86,16 +86,16 @@ console.log('Payout multiplier:', bet.round?.payoutMultiplier);
 
 ### Authentication
 
-#### `requestAuthenticate(options?)`
+#### `authenticate(options?)`
 
 Authenticate a player session with the RGS.
 
 ```typescript
 // Uses URL parameters automatically
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
 // Or provide explicit options
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID?: string,    // From URL param 'sessionID' if not provided
   rgsUrl?: string,       // From URL param 'rgs_url' if not provided  
   language?: string      // From URL param 'lang' if not provided (defaults to 'en')
@@ -116,13 +116,13 @@ const auth = await requestAuthenticate({
 
 ### Betting
 
-#### `requestBet(options)`
+#### `play(options)`
 
 Place a bet and start a new round.
 
 ```typescript
 // Uses URL parameters for sessionID/rgsUrl/currency automatically
-const bet = await requestBet({
+const bet = await play({
   amount: number,      // Required: Dollar amount (e.g., 1.00 for $1)
   mode: string,        // Required: Bet mode (e.g., 'base')
   currency?: string,   // From URL param 'currency' if not provided (defaults to 'USD')
@@ -136,16 +136,16 @@ const bet = await requestBet({
 - `balance` - Updated player balance
 - `status` - Operation status
 
-#### `requestEndRound(options?)`
+#### `endRound(options?)`
 
 End the current betting round.
 
 ```typescript
 // Uses URL parameters automatically
-const result = await requestEndRound();
+const result = await endRound();
 
 // Or provide explicit options
-const result = await requestEndRound({
+const result = await endRound({
   sessionID?: string,  // From URL param 'sessionID' if not provided
   rgsUrl?: string      // From URL param 'rgs_url' if not provided
 });
@@ -153,16 +153,16 @@ const result = await requestEndRound({
 
 ### Balance Management
 
-#### `requestBalance(options?)`
+#### `getBalance(options?)`
 
 Get current player balance.
 
 ```typescript
 // Uses URL parameters automatically
-const balance = await requestBalance();
+const balance = await getBalance();
 
 // Or provide explicit options
-const balance = await requestBalance({
+const balance = await getBalance({
   sessionID?: string,  // From URL param 'sessionID' if not provided
   rgsUrl?: string      // From URL param 'rgs_url' if not provided
 });
@@ -170,12 +170,12 @@ const balance = await requestBalance({
 
 ### Game Events
 
-#### `requestEndEvent(options)`
+#### `endEvent(options)`
 
 Track a game event for bet progress.
 
 ```typescript
-const result = await requestEndEvent({
+const result = await endEvent({
   eventIndex: number,  // Required: Event index number
   sessionID?: string,  // From URL param 'sessionID' if not provided
   rgsUrl?: string      // From URL param 'rgs_url' if not provided
@@ -184,12 +184,12 @@ const result = await requestEndEvent({
 
 ### Replay
 
-#### `requestReplay(options)`
+#### `replay(options)`
 
 Fetch historical bet data for replay/review purposes.
 
 ```typescript
-const replay = await requestReplay({
+const replay = await replay({
   game: string,        // Required: Game identifier
   version: string,     // Required: Game version
   mode: string,        // Required: Bet mode
@@ -231,12 +231,12 @@ const params = getReplayUrlParams();
 
 ### Testing & Debugging
 
-#### `requestForceResult(options)`
+#### `forceResult(options)`
 
 Search for specific game results (useful for testing).
 
 ```typescript
-const results = await requestForceResult({
+const results = await forceResult({
   mode: string,        // Required: Search mode
   search: {            // Required: Search criteria
     bookID?: number,
@@ -355,7 +355,7 @@ const processBet = (bet: MyGameBet) => {
 All methods return responses with status information:
 
 ```typescript
-const bet = await requestBet({
+const bet = await play({
   sessionID: 'player-123',
   currency: 'USD',
   amount: 1.00,

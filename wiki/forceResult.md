@@ -1,11 +1,11 @@
-# requestForceResult
+# forceResult
 
 Search for specific game results in the RGS system. This function is primarily used for testing, debugging, and finding specific game outcomes.
 
 ## 📋 Syntax
 
 ```typescript
-requestForceResult(options: ForceResultOptions): Promise<SearchResponse>
+forceResult(options: ForceResultOptions): Promise<SearchResponse>
 ```
 
 ## 📝 Parameters
@@ -52,10 +52,10 @@ interface SearchResponse {
 ### Basic Result Search (Browser with URL params)
 
 ```typescript
-import { requestForceResult } from 'stake-engine-client';
+import { forceResult } from 'stake-engine-client';
 
 // URL: https://game.com/play?rgs_url=api.stakeengine.com
-const results = await requestForceResult({
+const results = await forceResult({
   mode: 'base',
   search: {
     bookID: 42,
@@ -76,9 +76,9 @@ if (results.status?.statusCode === 'SUCCESS') {
 ### Search for Specific Symbols
 
 ```typescript
-import { requestForceResult } from 'stake-engine-client';
+import { forceResult } from 'stake-engine-client';
 
-const symbolSearch = await requestForceResult({
+const symbolSearch = await forceResult({
   mode: 'base',
   search: {
     symbol: 'BONUS',
@@ -95,7 +95,7 @@ if (symbolSearch.status?.statusCode === 'SUCCESS') {
 ### Testing Different Game Modes
 
 ```typescript
-import { requestForceResult } from 'stake-engine-client';
+import { forceResult } from 'stake-engine-client';
 
 async function testGameModes() {
   const modes = ['base', 'bonus', 'freespin'];
@@ -105,7 +105,7 @@ async function testGameModes() {
     try {
       console.log(`🔍 Searching ${mode} mode...`);
       
-      const results = await requestForceResult({
+      const results = await forceResult({
         mode,
         search: {
           bookID: 1,
@@ -140,7 +140,7 @@ await testGameModes();
 ### Wild Symbol Analysis
 
 ```typescript
-import { requestForceResult } from 'stake-engine-client';
+import { forceResult } from 'stake-engine-client';
 
 async function analyzeWildSymbols() {
   const wildMultipliers = [2, 3, 5, 10];
@@ -150,7 +150,7 @@ async function analyzeWildSymbols() {
     try {
       console.log(`🔍 Searching for ${multiplier}x wild symbols...`);
       
-      const results = await requestForceResult({
+      const results = await forceResult({
         mode: 'base',
         search: {
           hasWild: true,
@@ -190,7 +190,7 @@ await analyzeWildSymbols();
 ### Advanced Search with Multiple Criteria
 
 ```typescript
-import { requestForceResult } from 'stake-engine-client';
+import { forceResult } from 'stake-engine-client';
 
 async function performAdvancedSearch() {
   const searchCriteria = {
@@ -224,7 +224,7 @@ async function performAdvancedSearch() {
     try {
       console.log(`🔍 Searching for ${searchName}...`);
       
-      const results = await requestForceResult(criteria);
+      const results = await forceResult(criteria);
       
       if (results.status?.statusCode === 'SUCCESS') {
         searchResults[searchName] = {
@@ -263,14 +263,14 @@ console.log('📋 Advanced Search Results:', advancedResults);
 ### Test Result Validation
 
 ```typescript
-import { requestForceResult, requestBet } from 'stake-engine-client';
+import { forceResult, play } from 'stake-engine-client';
 
 async function validateTestResults() {
   try {
     console.log('🧪 Validating test results...');
     
     // Search for specific test scenario
-    const searchResults = await requestForceResult({
+    const searchResults = await forceResult({
       mode: 'base',
       search: {
         bookID: 1,
@@ -293,7 +293,7 @@ async function validateTestResults() {
     // Optionally test one of the found results
     console.log('🎲 Testing first result scenario...');
     
-    const testBet = await requestBet({
+    const testBet = await play({
       currency: 'USD',
       amount: 1.00,
       mode: 'base'
@@ -321,7 +321,7 @@ console.log('Test validation:', validationPassed ? '✅ PASSED' : '❌ FAILED');
 ### Game Configuration Analysis
 
 ```typescript
-import { requestForceResult } from 'stake-engine-client';
+import { forceResult } from 'stake-engine-client';
 
 class GameConfigAnalyzer {
   private results: Map<string, any[]> = new Map();
@@ -338,7 +338,7 @@ class GameConfigAnalyzer {
   
   private async analyzeGameType(gameType: string) {
     try {
-      const results = await requestForceResult({
+      const results = await forceResult({
         mode: 'base',
         search: {
           gameType: gameType
@@ -404,8 +404,8 @@ await analyzer.analyzeGameConfiguration(['slots', 'poker', 'blackjack']);
 
 ## 🔗 Related Functions
 
-- **[requestBet](requestBet)** - Test found results with actual bets
-- **[requestAuthenticate](requestAuthenticate)** - May be needed for testing scenarios
+- **[play](play)** - Test found results with actual bets
+- **[authenticate](authenticate)** - May be needed for testing scenarios
 
 ## 🛠️ Implementation Notes
 
@@ -426,6 +426,6 @@ await analyzer.analyzeGameConfiguration(['slots', 'poker', 'blackjack']);
 
 ## 📚 See Also
 
-- **[requestBet](requestBet)** - Testing found results with actual gameplay
+- **[play](play)** - Testing found results with actual gameplay
 - **[Usage Patterns](Usage-Patterns)** - Examples of testing workflows
 - **[Debug Guide](Debug-Guide)** - Using search results for debugging

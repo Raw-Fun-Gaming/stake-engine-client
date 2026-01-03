@@ -1,11 +1,11 @@
-# requestEndRound
+# endRound
 
 End the current betting round and finalize any pending game results. This function should be called after game completion to properly close the round.
 
 ## 📋 Syntax
 
 ```typescript
-requestEndRound(options?: EndRoundOptions): Promise<EndRoundResponse>
+endRound(options?: EndRoundOptions): Promise<EndRoundResponse>
 ```
 
 ## 📝 Parameters
@@ -48,10 +48,10 @@ interface EndRoundResponse {
 ### Basic Round Ending (Browser with URL params)
 
 ```typescript
-import { requestEndRound } from 'stake-engine-client';
+import { endRound } from 'stake-engine-client';
 
 // URL: https://game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com
-const result = await requestEndRound();
+const result = await endRound();
 
 if (result.status?.statusCode === 'SUCCESS') {
   console.log('✅ Round ended successfully');
@@ -64,9 +64,9 @@ if (result.status?.statusCode === 'SUCCESS') {
 ### With Explicit Configuration
 
 ```typescript
-import { requestEndRound } from 'stake-engine-client';
+import { endRound } from 'stake-engine-client';
 
-const result = await requestEndRound({
+const result = await endRound({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com'
 });
@@ -87,13 +87,13 @@ import {
 async function playCompleteRound() {
   try {
     // 1. Authenticate player
-    const auth = await requestAuthenticate();
+    const auth = await authenticate();
     if (auth.status?.statusCode !== 'SUCCESS') {
       throw new Error('Authentication failed');
     }
     
     // 2. Place a bet
-    const bet = await requestBet({
+    const bet = await play({
       currency: 'USD',
       amount: 1.00,
       mode: 'base'
@@ -110,7 +110,7 @@ async function playCompleteRound() {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // 4. End the round
-    const endResult = await requestEndRound();
+    const endResult = await endRound();
     
     if (endResult.status?.statusCode === 'SUCCESS') {
       const finalBalance = (endResult.balance?.amount || 0) / API_AMOUNT_MULTIPLIER;
@@ -135,11 +135,11 @@ await playCompleteRound();
 ### Error Handling with Recovery
 
 ```typescript
-import { requestEndRound } from 'stake-engine-client';
+import { endRound } from 'stake-engine-client';
 
 async function endRoundSafely() {
   try {
-    const result = await requestEndRound();
+    const result = await endRound();
     
     switch (result.status?.statusCode) {
       case 'SUCCESS':
@@ -175,7 +175,7 @@ const finalBalance = await endRoundSafely();
 ### Batch Operations - Multiple Rounds
 
 ```typescript
-import { requestBet, requestEndRound } from 'stake-engine-client';
+import { requestBet, endRound } from 'stake-engine-client';
 
 async function playMultipleRounds(count: number, betAmount: number) {
   const results = [];
@@ -184,7 +184,7 @@ async function playMultipleRounds(count: number, betAmount: number) {
     console.log(`🎲 Starting round ${i + 1}/${count}`);
     
     // Place bet
-    const bet = await requestBet({
+    const bet = await play({
       currency: 'USD',
       amount: betAmount,
       mode: 'base'
@@ -194,7 +194,7 @@ async function playMultipleRounds(count: number, betAmount: number) {
       console.log(`Round ${i + 1} - Multiplier: ${bet.round?.payoutMultiplier}x`);
       
       // End round
-      const endResult = await requestEndRound();
+      const endResult = await endRound();
       
       results.push({
         roundNumber: i + 1,
@@ -240,10 +240,10 @@ console.log('Game session results:', gameResults);
 
 ## 🔗 Related Functions
 
-- **[requestBet](requestBet)** - Start a round that needs to be ended
-- **[requestBalance](requestBalance)** - Get updated balance after round end
-- **[requestAuthenticate](requestAuthenticate)** - May need re-authentication if session expires
-- **[requestEndEvent](requestEndEvent)** - Track events before ending round
+- **[play](play)** - Start a round that needs to be ended
+- **[getBalance](getBalance)** - Get updated balance after round end
+- **[authenticate](authenticate)** - May need re-authentication if session expires
+- **[endEvent](endEvent)** - Track events before ending round
 
 ## 🛠️ Implementation Notes
 
@@ -264,6 +264,6 @@ console.log('Game session results:', gameResults);
 
 ## 📚 See Also
 
-- **[requestBet](requestBet)** - How to start rounds
+- **[play](play)** - How to start rounds
 - **[Error Handling](Error-Handling)** - Complete guide to handling errors
 - **[Usage Patterns](Usage-Patterns)** - Real-world game flow examples

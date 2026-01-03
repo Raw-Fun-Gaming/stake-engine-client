@@ -1,11 +1,11 @@
-# requestPlay
+# play
 
 Place a bet and start a new betting round. This is the core function for initiating gameplay.
 
 ## 📋 Syntax
 
 ```typescript
-requestPlay(options: BetOptions): Promise<PlayResponse>
+play(options: BetOptions): Promise<PlayResponse>
 ```
 
 ## 📝 Parameters
@@ -59,10 +59,10 @@ interface PlayResponse {
 ### Basic Betting (Browser with URL params)
 
 ```typescript
-import { requestPlay } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 // URL: https://game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com&currency=USD
-const bet = await requestPlay({
+const bet = await play({
   amount: 1.00,      // $1.00 bet
   mode: 'base'       // Base game mode, currency from URL param
 });
@@ -77,9 +77,9 @@ if (bet.status?.statusCode === 'SUCCESS') {
 ### With Explicit Configuration
 
 ```typescript
-import { requestPlay } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
-const bet = await requestPlay({
+const bet = await play({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com',
   currency: 'USD',
@@ -97,7 +97,7 @@ import { requestPlay, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 async function placeBet(betAmount: number, currency: string = 'USD') {
   try {
-    const bet = await requestPlay({
+    const bet = await play({
       currency,
       amount: betAmount,
       mode: 'base'
@@ -153,24 +153,24 @@ await placeBet(2.50);  // Place a $2.50 bet
 ### Different Bet Modes
 
 ```typescript
-import { requestPlay } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 // Base game bet
-const baseBet = await requestPlay({
+const baseBet = await play({
   currency: 'USD',
   amount: 1.00,
   mode: 'base'
 });
 
 // Bonus game bet (if applicable to your game)
-const bonusBet = await requestPlay({
+const bonusBet = await play({
   currency: 'USD',
   amount: 2.00,
   mode: 'bonus'
 });
 
 // Free spin bet (usually amount is 0)
-const freeSpinBet = await requestPlay({
+const freeSpinBet = await play({
   currency: 'USD',
   amount: 0.00,
   mode: 'freespin'
@@ -180,13 +180,13 @@ const freeSpinBet = await requestPlay({
 ### Variable Bet Amounts
 
 ```typescript
-import { requestPlay } from 'stake-engine-client';
+import { play } from 'stake-engine-client';
 
 // Different bet sizes
 const betAmounts = [0.10, 0.25, 0.50, 1.00, 2.50, 5.00, 10.00];
 
 async function placeBetWithAmount(amount: number) {
-  const bet = await requestPlay({
+  const bet = await play({
     currency: 'USD',
     amount: amount,
     mode: 'base'
@@ -239,10 +239,10 @@ amount: 1.00    // $1.00
 
 ## 🔗 Related Functions
 
-- **[requestAuthenticate](requestAuthenticate)** - Must be called first
-- **[requestEndRound](requestEndRound)** - End the current round
-- **[requestBalance](requestBalance)** - Check balance before betting
-- **[requestEndEvent](requestEndEvent)** - Track game events during play
+- **[authenticate](authenticate)** - Must be called first
+- **[endRound](endRound)** - End the current round
+- **[getBalance](getBalance)** - Check balance before betting
+- **[endEvent](endEvent)** - Track game events during play
 
 ## 🛠️ Implementation Notes
 

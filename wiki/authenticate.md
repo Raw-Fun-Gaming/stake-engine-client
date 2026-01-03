@@ -1,11 +1,11 @@
-# requestAuthenticate
+# authenticate
 
 Authenticate a player session with the RGS and retrieve player information, game configuration, and active round details.
 
 ## 📋 Syntax
 
 ```typescript
-requestAuthenticate(options?: AuthenticateOptions): Promise<AuthenticateResponse>
+authenticate(options?: AuthenticateOptions): Promise<AuthenticateResponse>
 ```
 
 ## 📝 Parameters
@@ -62,10 +62,10 @@ interface AuthenticateResponse {
 ### Using URL Parameters (Browser)
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
 // URL: https://game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com&lang=en
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
 if (auth.status?.statusCode === 'SUCCESS') {
   console.log('🎉 Authentication successful!');
@@ -81,9 +81,9 @@ if (auth.status?.statusCode === 'SUCCESS') {
 ### Using Explicit Parameters
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
-const auth = await requestAuthenticate({
+const auth = await authenticate({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com',
   language: 'es'  // Spanish
@@ -95,10 +95,10 @@ console.log('Player authenticated:', auth.status?.statusCode === 'SUCCESS');
 ### With Error Handling
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
 try {
-  const auth = await requestAuthenticate();
+  const auth = await authenticate();
   
   switch (auth.status?.statusCode) {
     case 'SUCCESS':
@@ -127,9 +127,9 @@ try {
 ### Checking for Active Rounds
 
 ```typescript
-import { requestAuthenticate } from 'stake-engine-client';
+import { authenticate } from 'stake-engine-client';
 
-const auth = await requestAuthenticate();
+const auth = await authenticate();
 
 if (auth.status?.statusCode === 'SUCCESS') {
   if (auth.round) {
@@ -154,9 +154,9 @@ if (auth.status?.statusCode === 'SUCCESS') {
 
 ## 🔗 Related Functions
 
-- **[requestBalance](requestBalance)** - Get updated balance information
-- **[requestBet](requestBet)** - Place a bet after authentication
-- **[requestEndRound](requestEndRound)** - End any active round
+- **[getBalance](getBalance)** - Get updated balance information
+- **[play](play)** - Place a bet after authentication
+- **[endRound](endRound)** - End any active round
 
 ## 🛠️ Implementation Notes
 

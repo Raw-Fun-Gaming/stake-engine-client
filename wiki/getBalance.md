@@ -1,11 +1,11 @@
-# requestBalance
+# getBalance
 
 Get the current player balance information. This function can be called anytime to retrieve up-to-date balance data.
 
 ## 📋 Syntax
 
 ```typescript
-requestBalance(options?: BalanceOptions): Promise<BalanceResponse>
+getBalance(options?: BalanceOptions): Promise<BalanceResponse>
 ```
 
 ## 📝 Parameters
@@ -48,10 +48,10 @@ interface BalanceResponse {
 ### Basic Balance Check (Browser with URL params)
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 // URL: https://game.com/play?sessionID=player-123&rgs_url=api.stakeengine.com
-const balanceInfo = await requestBalance();
+const balanceInfo = await getBalance();
 
 if (balanceInfo.status?.statusCode === 'SUCCESS') {
   const balanceInDollars = (balanceInfo.balance?.amount || 0) / API_AMOUNT_MULTIPLIER;
@@ -65,9 +65,9 @@ if (balanceInfo.status?.statusCode === 'SUCCESS') {
 ### With Explicit Configuration
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
-const balanceInfo = await requestBalance({
+const balanceInfo = await getBalance({
   sessionID: 'player-session-123',
   rgsUrl: 'api.stakeengine.com'
 });
@@ -81,11 +81,11 @@ if (balanceInfo.balance) {
 ### Balance Check with Error Handling
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 async function checkPlayerBalance(): Promise<number | null> {
   try {
-    const balanceInfo = await requestBalance();
+    const balanceInfo = await getBalance();
     
     switch (balanceInfo.status?.statusCode) {
       case 'SUCCESS':
@@ -120,7 +120,7 @@ const currentBalance = await checkPlayerBalance();
 ### Balance Monitoring System
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 class BalanceMonitor {
   private lastKnownBalance: number = 0;
@@ -128,7 +128,7 @@ class BalanceMonitor {
   
   async updateBalance(): Promise<boolean> {
     try {
-      const balanceInfo = await requestBalance();
+      const balanceInfo = await getBalance();
       
       if (balanceInfo.status?.statusCode === 'SUCCESS' && balanceInfo.balance) {
         const newBalance = balanceInfo.balance.amount / API_AMOUNT_MULTIPLIER;
@@ -194,11 +194,11 @@ setInterval(() => {
 ### Balance Validation Before Betting
 
 ```typescript
-import { requestBalance, requestBet, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, play, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 async function placeBetWithValidation(betAmount: number): Promise<boolean> {
   // Check balance first
-  const balanceInfo = await requestBalance();
+  const balanceInfo = await getBalance();
   
   if (balanceInfo.status?.statusCode !== 'SUCCESS') {
     console.error('❌ Cannot check balance before betting');
@@ -215,7 +215,7 @@ async function placeBetWithValidation(betAmount: number): Promise<boolean> {
   console.log(`✅ Balance check passed: $${currentBalance.toFixed(2)} >= $${betAmount.toFixed(2)}`);
   
   // Proceed with bet
-  const bet = await requestBet({
+  const bet = await play({
     currency: 'USD',
     amount: betAmount,
     mode: 'base'
@@ -231,7 +231,7 @@ const betSuccessful = await placeBetWithValidation(2.50);
 ### Periodic Balance Updates
 
 ```typescript
-import { requestBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
+import { getBalance, API_AMOUNT_MULTIPLIER } from 'stake-engine-client';
 
 class GameBalanceManager {
   private balanceUpdateInterval: NodeJS.Timeout | null = null;
@@ -261,7 +261,7 @@ class GameBalanceManager {
   
   private async checkBalance(): Promise<void> {
     try {
-      const balanceInfo = await requestBalance();
+      const balanceInfo = await getBalance();
       
       if (balanceInfo.status?.statusCode === 'SUCCESS' && balanceInfo.balance) {
         const balance = balanceInfo.balance.amount / API_AMOUNT_MULTIPLIER;
@@ -310,9 +310,9 @@ balanceManager.startBalanceUpdates((balance, currency) => {
 
 ## 🔗 Related Functions
 
-- **[requestAuthenticate](requestAuthenticate)** - Initial balance is included in auth response
-- **[requestBet](requestBet)** - Updates balance after betting
-- **[requestEndRound](requestEndRound)** - Final balance after round completion
+- **[authenticate](authenticate)** - Initial balance is included in auth response
+- **[play](play)** - Updates balance after betting
+- **[endRound](endRound)** - Final balance after round completion
 
 ## 🛠️ Implementation Notes
 
