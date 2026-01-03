@@ -12,7 +12,7 @@
  * management, and game event tracking.
  * 
  * @version 1.0.0
- * @author Planet Blue Invasion Team
+ * @author Raw Run Gaming
  * @license MIT
  */
 
