@@ -42,7 +42,6 @@ export class StakeEngineClient {
 
 		if (response.status !== 200) {
 			const errorData = await response.json().catch(() => ({}));
-			console.error('RGS API error:', errorData.message);
 			throw new Error(errorData.message || `RGS API error: ${response.status} ${response.statusText}`);
 		}
 
@@ -67,7 +66,6 @@ export class StakeEngineClient {
 
 		if (response.status !== 200) {
 			const errorData = await response.json().catch(() => ({}));
-			console.error('RGS API error:', errorData.message);
 			throw new Error(errorData.message || `RGS API error: ${response.status} ${response.statusText}`);
 		}
 
